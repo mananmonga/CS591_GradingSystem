@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+import classSrc.ReadExcel;
+import classSrc.SelectFile;
+
 public class StudentPage extends JPanel implements ActionListener
 {	
 	JLabel sId = new JLabel("Student ID:");
@@ -63,6 +66,13 @@ public class StudentPage extends JPanel implements ActionListener
 		listPanel.updateUI();
 	}
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource()==sLoad) {
+			try {
+				ReadExcel.getSheet(SelectFile.select());
+			}
+			catch(Exception exception) {
+				System.out.println(exception);
+			}
+		}
 	}
 }
