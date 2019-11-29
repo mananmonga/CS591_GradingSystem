@@ -1,4 +1,4 @@
-package jdbcProject;
+package classSrc;
 
 import java.sql.*;
 
