@@ -1,0 +1,108 @@
+CS591 Final Project Object Design:
+
+
+Person
+	Name name
+	String ID
+
+Teacher (singleton class) extends Person:
+	//username for teacher login is their person.ID
+	String password
+	Student[] Students
+	EnrolledStudent[] EnrolledStudents
+	Course[] courses
+	AssignmentTemplate[] templates
+
+
+
+
+Student extends Person: //might be unnecessary to have a global student class
+
+	
+EnrolledStudent 
+	-for each course a student is enrolled in, an EnrolledStudent instance is created for them. Each different EnrolledStudent contains their results in a particular course, but still references the overall global student
+
+	-Student GlobalStudent
+	-Course EnrolledIn
+	-Section section
+	-Double bonus
+	-Double GetRawGrade() {//calculate by iterating through all graded assignment scores and their weights, as well as the bonus}
+	-Double CurvedGrade() {//same as above but taking into account curves of each graded assignment and the overall course}
+	-GradedAssignments[] grades
+	
+
+
+
+Course:
+	String Name
+	String ID
+	String semester
+	String Description
+	Section[] Sections
+	Assignment[] Assignments
+	Curve curve //curve for the overall course
+	Void UpdateCurve () {}
+	EnrolledStudent[] RankStudents() { //iterate through all Sections.EnrolledStudents and return a list of them ordered by highest grade to lowest}
+	Void AddAssignment() { //adds a new assignment with specified weight}
+	Void RemoveAssignment() { //removes an assignment and all corresponding GradedAssignments for each enrolled student if that assignment was graded}
+	Void SaveTemplate() {} //adds this assignment-weight configuration into a Template object and saves it in the teacher’s templates
+	CourseTemplate LoadTemplate(index I) {} //picks an assignment-weight template from the teacher’s previously saved ones
+	
+
+
+Section:
+	String courseID
+	String ID
+	EnrolledStudent[] EnrolledStudents
+	EnrolledStudent[] RankStudents() { //iterate through just this section’s EnrolledStudents and return a list of them ordered by highest grade to lowest}
+
+
+	
+
+
+Assignment
+	String type
+	String name
+	Course course //
+	String Description
+	
+	Double totalCredit
+	Double Weight
+	Void UpdateWeight () {//updates this assignment’s weight after it has been confirmed to keep the overall class assignments’ weights at 100%}
+	Curve curve //curve for each assignment
+	Void UpdateCurve () {}
+	GradedAssignments[] grades
+	Void AddAssignmentGrade(GradedAssignment grade) { //called for each cell in the table that the teacher enters in}
+	Bool isGraded() {return grades == null} //necessary to determine student’s grades, averages, etc when not all course assignments are graded yet
+	GetAverage()
+	GetMedian()
+	GetStandardDeviation()
+	GetLowest()
+	GetHighest()
+
+-Add children classes of assignment for absolute / deducted score
+
+
+GradedAssignment / Grade
+	Assignment assignment
+	EnrolledStudent enrolledStudent
+	String Comments
+	Double credit
+	Double getPercentageScore { return credit / assigment.totalCredit} //also take assignment.curve into account
+
+
+CourseTemplate
+	Assignment[] assignments //when these are initialized in the constructor by plugging in the previous course’s assignments, a copy is made without the grades
+	
+
+Curve
+	Double amount //meaning changes depending on type
+
+FlatCurve extends Curve
+
+PercentageCurve extends Curve
+
+	
+
+
+Enum CurveType {uncurved, flat, percentage}
