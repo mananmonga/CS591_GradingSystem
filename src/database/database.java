@@ -6,7 +6,7 @@
  * @Param
  * @updateTime 2019.12.1
  */
-package jdbcProject;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -97,24 +97,48 @@ public class database {
 		return res;
 	}
 	
+	//add section for one course
+	public void addSection(int SectionID, int CourseID) {
+		sql = "insert into gradingsystem.Section( SectionID, CourseID) values ('" + SectionID+ "'," + "'" + CourseID +"')" ;
+		try {
+			stmt.executeUpdate(sql);
+		}
+		catch(Exception e) {
+			System.out.println("add section fail");  
+            e.printStackTrace();
+		}
+	}
+	
+	//search all section for one course
+	public ResultSet searchsection(int CourseID) {
+		sql = "select * from gradingsystem.Section where CourseID = " + CourseID;
+		try {
+			res = stmt.executeQuery(sql);
+		}
+		catch(Exception e) {
+			System.out.println("search sections for one course fail");  
+            e.printStackTrace();
+		}
+		return res;
+	}
+	
 	/*Student operation:*/
 	
 	//add student
 	public void addStudent(String ID, String Name) {
-		sql = "insert into gradingsystem.Student( StudentID,Name ) values ('" + ID+"',"+ "'"+ Name + "')" ;
-		try {
-			if(!studentExist(ID)) {
+		if(!studentExist(ID)) {
+			sql = "insert into gradingsystem.Student( StudentID,Name ) values ('" + ID+"',"+ "'"+ Name + "')" ;
+			try {
 				int a = stmt.executeUpdate(sql);
 				if(a == 1) {
 					System.out.println("add student success");
 				}
 			}
+			catch(Exception e) {
+				System.out.println("add student fail");  
+	            e.printStackTrace();  
+			}
 		}
-		catch(Exception e) {
-			System.out.println("add student fail");  
-            e.printStackTrace();  
-		}
-		
 	}
 	
 	//delete student
@@ -130,8 +154,8 @@ public class database {
 	}
 	
 	//search student
-	public ResultSet searchStudent(String ID, String Name) {
-		sql = "select * from gradingsystem.Student where Name =" + "'"+Name +"'" +" and StudentID = " + "'"+ID+"'";
+	public ResultSet searchStudent(String ID) {
+		sql = "select * from gradingsystem.Student where StudentID =" + "'"+ID +"'";
 		try {
 			res = stmt.executeQuery(sql);
 		}
@@ -159,14 +183,10 @@ public class database {
 	//determine whether the student is in the database or not
 	public boolean studentExist(String ID) {
 		boolean Exist = false;
-		res = showStudent();
+		res = searchStudent(ID);
 		try {
-			while(res.next()) {
-				String StudentID = res.getString("StudentID");
-				if(StudentID.equals(ID)) {
-					Exist = true;
-					break;
-				}
+			if(res.next()) {
+				Exist = true;
 			}
 		}
 		catch(Exception e) {

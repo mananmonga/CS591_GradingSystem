@@ -65,8 +65,34 @@ CREATE TABLE `Grade` (
 
 LOCK TABLES `Grade` WRITE;
 /*!40000 ALTER TABLE `Grade` DISABLE KEYS */;
-INSERT INTO `Grade` VALUES (1,'HW1','U20',99),(1,'HW1','U22',98),(1,'HW1','U23',70),(1,'HW1','U24',80),(1,'HW2','U20',99),(2,'HW3','U20',99);
+INSERT INTO `Grade` VALUES (1,'HW1','U20',99),(1,'HW2','U20',80),(2,'HW3','U20',79);
 /*!40000 ALTER TABLE `Grade` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Section`
+--
+
+DROP TABLE IF EXISTS `Section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Section` (
+  `SectionID` int(11) NOT NULL,
+  `CourseID` int(11) NOT NULL,
+  PRIMARY KEY (`SectionID`,`CourseID`),
+  KEY `CourseID_5_idx` (`CourseID`),
+  CONSTRAINT `CourseID_5` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Section`
+--
+
+LOCK TABLES `Section` WRITE;
+/*!40000 ALTER TABLE `Section` DISABLE KEYS */;
+INSERT INTO `Section` VALUES (1,1),(2,1),(1,2),(2,2);
+/*!40000 ALTER TABLE `Section` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -90,7 +116,7 @@ CREATE TABLE `Student` (
 
 LOCK TABLES `Student` WRITE;
 /*!40000 ALTER TABLE `Student` DISABLE KEYS */;
-INSERT INTO `Student` VALUES ('U20','Tian'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan');
+INSERT INTO `Student` VALUES ('U20','Tian'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan'),('U27','Tian1'),('U29','Zhilin1'),('U30','Dennis1');
 /*!40000 ALTER TABLE `Student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +133,9 @@ CREATE TABLE `StudentCourse` (
   `section` int(11) DEFAULT NULL,
   PRIMARY KEY (`StudentID`,`CourseID`),
   KEY `CourseID_4_idx` (`CourseID`),
+  KEY `SectionID_1_idx` (`section`),
   CONSTRAINT `CourseID_4` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `SectionID_1` FOREIGN KEY (`section`) REFERENCES `Section` (`SectionID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `StudentID_4` FOREIGN KEY (`StudentID`) REFERENCES `Student` (`StudentID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -118,7 +146,6 @@ CREATE TABLE `StudentCourse` (
 
 LOCK TABLES `StudentCourse` WRITE;
 /*!40000 ALTER TABLE `StudentCourse` DISABLE KEYS */;
-INSERT INTO `StudentCourse` VALUES ('U20',2,2),('U22',1,1),('U22',2,1),('U23',1,1),('U24',1,2),('U25',2,1);
 /*!40000 ALTER TABLE `StudentCourse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -159,4 +186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-02 17:33:51
+-- Dump completed on 2019-12-05 19:26:38

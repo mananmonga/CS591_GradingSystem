@@ -1,4 +1,4 @@
-package jdbcProject;
+package database;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,6 +22,24 @@ public class databasetest {
 		}
 		System.out.println("\n");
 		
+		//test add section
+//		db.addSection(1, 1);
+//		db.addSection(2, 1);
+//		db.addSection(1, 2);
+//		db.addSection(2, 2);
+		System.out.println("All section for one course");
+		res = db.searchsection(2);
+		while(res.next()) {
+			String courseid = res.getString("CourseID");
+            String SectionID = res.getString("SectionID");
+            
+            System.out.println("course id:" + courseid +"     "+"Section ID: " + SectionID);
+            
+		}
+		System.out.println("\n");
+		
+		
+		
 		//Test Student
 //		db.addStudent("U22", "Hou");
 //		db.addStudent("U23", "You");
@@ -30,7 +48,7 @@ public class databasetest {
 		db.deleteStudent("U21");
 		//查学生test成功
 		System.out.println("Search One Student");
-		res = db.searchStudent("U20","Tian");
+		res = db.searchStudent("U20");
 		while(res.next()) {
 			String Studentid = res.getString("studentID");
             String Studentname = res.getString("Name");
@@ -57,6 +75,7 @@ public class databasetest {
 		//test add task, delete task
 		//db.addTask(2, "homework", "HW3", 100, 30);
 		//db.deleteTask(1, "HW1");
+		
 		System.out.println("Show One Course's All Task");
 		res = db.showTask(1);
 		while(res.next()) {
@@ -70,10 +89,7 @@ public class databasetest {
 		
 		//test grade
 		System.out.println("Show one student's grade in one course");
-//		db.addGrade(1, "HW1", "U20",99);
-//		db.addGrade(1, "HW2", "U20",99);
-//		db.addGrade(1, "HW3", "U21",99);
-//		db.addGrade(2, "HW3", "U20",99);
+
 		res = db.studentGrade(2, "U20");
 		while(res.next()) {
 			String Courseid = res.getString("CourseID");
@@ -102,7 +118,6 @@ public class databasetest {
 		}
 		System.out.println("\n");
 		//student-course test
-		//db.addStudent1("U20", 2, 2);
 //		db.deleteStudent1("U20", 1);
 		
 		
@@ -113,7 +128,6 @@ public class databasetest {
 		else {
 			System.out.println("not exit");
 		}
-	}
-	
-	
+		
+	}	
 }
