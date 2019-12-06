@@ -18,7 +18,55 @@ abstract public class Assignment {
 		
 		curve = null;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Double getTotalCredit() {
+		return totalCredit;
+	}
+
+	public void setTotalCredit(Double totalCredit) {
+		this.totalCredit = totalCredit;
+	}
+
+	public Double getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Double weight) {
+		this.weight = weight;
+	}
+
+	public Curve getCurve() {
+		return curve;
+	}
+
+	public void setCurve(Curve curve) {
+		this.curve = curve;
+	}
+
 	Assignment(String type_, String name_, String description_, Double totalCredit_, Double weight_, Curve curve_){
 		type = type_;
 		name = name_;
