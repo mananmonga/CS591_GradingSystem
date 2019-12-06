@@ -5,14 +5,21 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+import classSrc.*;
+
+
+
 public class AssignmentPage extends JPanel implements ActionListener
 {	
+	
+	ArrayList<Assignment> UnconfirmedAssignments; //a list of assignments the teacher is currently entering in. When the teacher wants to confirm, this list needs to be validated before it is added to Course.Assignments
+	
 	JLabel aType = new JLabel("Assignment Type:");
 	JLabel aDesc = new JLabel("Description:");
 	JLabel aCredit = new JLabel("Full Credits:");
 	JLabel aWeight = new JLabel("Weight(%):");
 	
-	JComboBox<String> aTypeBox = new JComboBox<>();
+	JComboBox<String> aTypeBox = new JComboBox<>(new String[] {"Deducted Score", "Absolute Score"});
 	JTextField aDescText = new JTextField("",10);
 	JTextField aCreditText = new JTextField("",10);
 	JTextField aWeightText = new JTextField("",10);
@@ -86,6 +93,7 @@ public class AssignmentPage extends JPanel implements ActionListener
 		confirm.addActionListener(this);
 		save.addActionListener(this);
 		tLoad.addActionListener(this);
+		aTypeBox.addActionListener(this);
 		this.setVisible(true);
 	}
 	
@@ -93,7 +101,80 @@ public class AssignmentPage extends JPanel implements ActionListener
 		listPanel.removeAll();
 		listPanel.updateUI();
 	}
+	
 	public void actionPerformed(ActionEvent e) {
 		
+		if(e.getSource() == add) { //add a new assignment to unconfirmed assignments
+			
+			Assignment unconfirmedNewAssignment;
+			Double newAssignmentCredit;
+			Double newAssignmentWeight;
+			
+			try {
+				newAssignmentCredit = Double.parseDouble(aCreditText.getText());
+				newAssignmentWeight = Double.parseDouble(aWeightText.getText());
+				
+				switch((String)aTypeBox.getSelectedItem()) {
+					case "Deducted Score":
+						unconfirmedNewAssignment = new DeductedScoreAssignment("", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null); //no input for curves for now
+						break;
+					case "Absolute Score":
+						unconfirmedNewAssignment = new AbsoluteScoreAssignment("", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null);
+						break;
+					default:
+						unconfirmedNewAssignment = new AbsoluteScoreAssignment();
+						break;
+				}
+				
+				UnconfirmedAssignments.add(unconfirmedNewAssignment);
+			}
+			catch(Exception ex) {
+				//TODO: NEED TO DISPLAY A MESSAGE FOR PARSING ERROR
+			}
+		
+			
+		}
+		
+		if(e.getSource() == confirm) { //teacher is trying to confirm a new assignment configuration for the course
+			if(ValidateAssignmentWeights()) {
+				//TODO: ADD UNCONFIRMED ASSIGNMENTS TO COURSE.ASSIGNMENTS
+				//TODO: SAVE UPDATED COURSE ASSIGNMENT STRUCTURE TO DATABASE
+				//TODO: SHOW SUCCESS MESSAGE IN UI
+				//TODO: ADD NEW ROW IN ASSIGNMENT TABLE FOR THIS NEWLY CONFIRMED ASSIGNMENT
+			}
+			else {
+				//TODO: DISPLAY MESSAGE TELLING TEACHER TO MAKE THE WEIGHTS ADD TO 100
+			}
+			
+		}
+		
+		if(e.getSource() == save) { //teacher is trying to save this assignment template
+			if(ValidateAssignmentWeights()) {
+				CourseTemplate newCourseTemplate = new CourseTemplate((Assignment[]) UnconfirmedAssignments.toArray());
+				//TODO: ADD NEW COURSE TEMPLATE TO TEACHER.COURSETEMPLATES
+				//TODO: SAVE NEW COURSE TEMPLATE TO DATABASE
+			}
+			else {
+				//TODO: DISPLAY MESSAGE TELLING TEACHER TO MAKE THE WEIGHTS ADD TO 100
+			}
+		}
+		
+		if(e.getSource() == tLoad) { //teacher is trying to load a previous assignment structure template
+			//TODO: CREATE A MENU ALLOWING TEACHER TO CHOOSE WHICH COURSE TEMPLATE THEY WANT FROM TEACHER.COURSETEMPLATES
+			//TODO: UnconfirmedAssignments = loadedCourseTemplate.assignments
+			//TODO: SHOW SUCCESS MESSAGE FOR TEMPLATE IMPORT
+			//TODO: POPULATE TABLE FOR NEW ASSIGNMENT STRUCTURE
+			
+		}
+		
+	}
+	
+	//checks that unconfirmed assignment weights add to 100
+	private boolean ValidateAssignmentWeights() {
+		Double totalWeight = 0.0;
+		for(Assignment unconfirmed : UnconfirmedAssignments) {
+			totalWeight += unconfirmed.weight;
+		}
+		return totalWeight == 100.0;
 	}
 }
