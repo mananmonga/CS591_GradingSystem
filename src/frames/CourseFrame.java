@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
-
+import classSrc.*;
 public class CourseFrame extends JFrame implements ActionListener
 {
 	JPanel introPage = new JPanel(new BorderLayout());
@@ -21,11 +21,14 @@ public class CourseFrame extends JFrame implements ActionListener
 	CardLayout cardLayout = new CardLayout();
 	String frameTitle;
 	
-	public CourseFrame() {
+	Course course;
+	
+	public CourseFrame(Course course_) {
 		this.frameTitle = "CS591 "+ "OOD";
 		initFrame();
 		initMenubar();
 		arrangePanel();
+		course = course_;
 	} 
 	
 	public void initMenubar() {

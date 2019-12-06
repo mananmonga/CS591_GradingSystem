@@ -3,6 +3,8 @@ import classSrc.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
 
 public class LoginFrame extends JFrame implements ActionListener//implements ActionListener
@@ -69,7 +71,11 @@ public class LoginFrame extends JFrame implements ActionListener//implements Act
         }
         if (e.getSource()==signIn){
         	if(GradingSystem.getInstance().LoginCheck(n,p)){
-        		new CourseListFrame();
+        		
+        		//TODO: INSTANTIATE NEW TEACHER CLASS THAT HOLDS ALL THE COURSES, ASSIGNMENTS, ETC LISTED IN THE DATABASE
+        		
+        		
+        		new CourseListFrame(new ArrayList<Course>() {}); //TODO: PASS TEACHER.COURSES AS A PARAMETER INTO COURSELISTFRAME
                 this.dispose();
             }else {
             	JOptionPane.showMessageDialog(getParent(), "Either your Username or Password is wrong. Please enter again.");

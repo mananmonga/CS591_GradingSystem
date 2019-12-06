@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class Teacher {
     private ArrayList<Course> courses;
-    private ArrayList<AssignmentTemplate> templates;
+    private ArrayList<CourseTemplate> templates;
     private ArrayList<enrolledStudent> enrolledStudents;
 
 
     public Teacher() {
     }
 
-    public Teacher(ArrayList<Course> courses, ArrayList<AssignmentTemplate> templates, ArrayList<enrolledStudent> enrolledStudents) {
+    public Teacher(ArrayList<Course> courses, ArrayList<CourseTemplate> templates, ArrayList<enrolledStudent> enrolledStudents) {
         this.courses = courses;
         this.templates = templates;
         this.enrolledStudents = enrolledStudents;
@@ -25,11 +25,11 @@ public class Teacher {
         this.courses = courses;
     }
 
-    public ArrayList<AssignmentTemplate> getTemplates() {
+    public ArrayList<CourseTemplate> getTemplates() {
         return templates;
     }
 
-    public void setTemplates(ArrayList<AssignmentTemplate> templates) {
+    public void setTemplates(ArrayList<CourseTemplate> templates) {
         this.templates = templates;
     }
 
