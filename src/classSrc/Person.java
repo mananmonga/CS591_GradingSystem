@@ -1,6 +1,6 @@
 package classSrc;
 
-public class Person {
+abstract public class Person {
     protected String name;
     protected String ID;
 

@@ -116,10 +116,10 @@ public class AssignmentPage extends JPanel implements ActionListener
 				
 				switch((String)aTypeBox.getSelectedItem()) {
 					case "Deducted Score":
-						unconfirmedNewAssignment = new DeductedScoreAssignment("", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null); //no input for curves for now
+						unconfirmedNewAssignment = new DeductedScoreAssignment("", "", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null); //no input for curves for now
 						break;
 					case "Absolute Score":
-						unconfirmedNewAssignment = new AbsoluteScoreAssignment("", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null);
+						unconfirmedNewAssignment = new AbsoluteScoreAssignment("", "", "", aDescText.getText(), newAssignmentCredit, newAssignmentWeight, null);
 						break;
 					default:
 						unconfirmedNewAssignment = new AbsoluteScoreAssignment();

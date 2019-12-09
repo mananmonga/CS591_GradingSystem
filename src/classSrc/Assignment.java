@@ -1,12 +1,14 @@
 package classSrc;
 
 abstract public class Assignment {
+	public String ID;
 	public String type;
 	public String name;
 	public String description;
 	public Double totalCredit;
 	public Double weight;
 	public Curve curve;
+	public AssignmentScoringType scoringType;
 	
 	
 	Assignment(){
@@ -15,7 +17,7 @@ abstract public class Assignment {
 		description = "No description available.";
 		totalCredit = 100.0;
 		weight = 0.1;
-		
+		ID = "999999999";
 		curve = null;
 	}
 
@@ -67,18 +69,36 @@ abstract public class Assignment {
 		this.curve = curve;
 	}
 
-	Assignment(String type_, String name_, String description_, Double totalCredit_, Double weight_, Curve curve_){
+	Assignment(String ID_, String type_, String name_, String description_, Double totalCredit_, Double weight_, Curve curve_){
 		type = type_;
 		name = name_;
 		description = description_;
 		totalCredit = totalCredit_;
 		weight = weight_;
 		curve = curve_;
+		ID = ID_;
 	}
 	
 	public boolean hasCurve() {
 		return curve != null;
 	}
+	
+	//must implement equals method so that an assignment can be removed from Course.Assignments
+    @Override
+    public boolean equals(Object other) {
+    	  
+        if (other == this) { 
+            return true; 
+        } 
+  
+        if (!(other instanceof Assignment)) { 
+            return false; 
+        } 
+          
+        Assignment otherAssignment = (Assignment)other; 
+          
+        return this.ID == otherAssignment.ID;
+    }
 	
 	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
 	public Double CalculatePercentageScore(Double score, boolean curved) {

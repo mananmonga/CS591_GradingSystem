@@ -43,6 +43,10 @@ public class Course {
         this.curve = curve;
     }
     
+    public boolean isCurved() {
+    	return this.curve != null;
+    }
+    
     public Course() {
     	this.name = "Empty Course";
     	this.ID = "999999999";
@@ -59,16 +63,53 @@ public class Course {
     	assignments = new ArrayList<Assignment>();
     }
     
+    //must implement equals method so that a course can be removed from Teacher.courses
+    @Override
+    public boolean equals(Object other) {
+    	  
+        if (other == this) { 
+            return true; 
+        } 
+  
+        if (!(other instanceof Course)) { 
+            return false; 
+        } 
+          
+        Course otherCourse = (Course)other; 
+          
+        return this.ID == otherCourse.ID;
+    }
+    
     public void EnrollStudent(enrolledStudent es) {
     	enrolledStudents.add(es);
+    	//TODO: ADD ENROLLEDSTUDENT TO DATABASE
+    }
+    
+    public void RemoveStudent(enrolledStudent es) {
+    	for(int i = 0; i < enrolledStudents.size(); i += 1) {
+    		if(enrolledStudents.get(i).equals(es)) {
+    			enrolledStudents.remove(i);
+    		}
+    	}
+    	//TODO: REMOVE ENROLLED STUDENT FROM DATABASE
     }
     
     public void AddNewAssignment(Assignment a) {
     	assignments.add(a);
+    	//TODO: ADD ASSIGNMENT TO DATABASE
+    }
+    
+    public void RemoveAssignment(Assignment a) {
+    	for(int i = 0; i < assignments.size(); i += 1) {
+    		if(assignments.get(i).equals(a)) {
+    			assignments.remove(i);
+    		}
+    	}
+    	//TODO: REMOVE ASSIGNMENT FROM DATABASE
     }
     
     //returns the overall grade for the specified student in this course. When not all assignments have been graded yet, this returns a proportional score based on what has already been graded
-    public Double GetRawGrade(enrolledStudent es) {
+    public Double CalcRawOverallGrade(enrolledStudent es) {
     	double totalWeightGraded = 0.0;
     	double totalPercentageScoreGraded = 0.0;
     	for(int i = 0; i < es.grades.size(); i += 1) {
@@ -79,7 +120,7 @@ public class Course {
     }
     
     //returns the overall grade for the specified student in this course, taking into account the overall course curve and individual assignment curves
-    public Double GetCurvedGrade(enrolledStudent es) {
+    public Double CalcCurvedOverallGrade(enrolledStudent es) {
     	double totalWeightGraded = 0.0;
     	double totalPercentageScoreGraded = 0.0;
     	for(int i = 0; i < es.grades.size(); i += 1) {
@@ -127,7 +168,7 @@ public class Course {
         int k = l; 
         while (i < n1 && j < n2) 
         { 
-            if (GetRawGrade(L[i]) <= GetRawGrade(R[j])) 
+            if (CalcRawOverallGrade(L[i]) <= CalcRawOverallGrade(R[j])) 
             { 
                 es[k] = L[i]; 
                 i++; 
