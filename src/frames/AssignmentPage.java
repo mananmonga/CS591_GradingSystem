@@ -4,18 +4,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
-import classSrc.CustomizedTable;
+import classSrc.*;
 
-public class AssignmentPage extends JPanel implements ActionListener
+public class AssignmentPage extends JPanel implements ActionListener, TableModelListener
 {	
-	JLabel aType = new JLabel("Assignment Type:");
-	JLabel aDesc = new JLabel("Description:");
+	JLabel aType = new JLabel("Type:");
+	JLabel aName = new JLabel("Name:");
 	JLabel aCredit = new JLabel("Full Credits:");
-	JLabel aWeight = new JLabel("Weight(%):");
+	JLabel aWeight = new JLabel("Weight:");
 	
-	JComboBox<String> aTypeBox = new JComboBox<>();
-	JTextField aDescText = new JTextField("",10);
+	JComboBox<String> aTypeBox = new JComboBox<String>(new String[] {GradingType.Absolute.toString(), GradingType.Deduction.toString()});
+	JTextField aNameText = new JTextField("",10);
 	JTextField aCreditText = new JTextField("",10);
 	JTextField aWeightText = new JTextField("",10);
 	
@@ -32,13 +33,19 @@ public class AssignmentPage extends JPanel implements ActionListener
     JPanel inputPanel = new JPanel(new GridLayout(4,1,10,5));
     
     JScrollPane jScrollPane;
-    String[] columnNames = {"Type", "Description", "Full Credits","Weight(%)"};
+    String[] columnNames = {"Type", "Name", "Description", "Full Credits", "Weight"};
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
-    int selectedIndex = -1;
-    	
-	public AssignmentPage()
-	{ 	//organize panel
+    HashSet<String> set = new HashSet<String>() {{
+    	add("Type");
+    }};
+    Course course;
+    ArrayList<Assignment> assignments;
+    
+	public AssignmentPage(Course course_)
+	{ 	
+		this.course = course_;
+		//organize panel
 		this.setLayout(new BorderLayout());
 		JLabel label = new JLabel("Assignment Setting", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
@@ -52,14 +59,9 @@ public class AssignmentPage extends JPanel implements ActionListener
 		loadPanel.add(tLoad);
 		mainPanel.add(loadPanel,BorderLayout.NORTH);
 		
-		for(int i =0 ;i < 3;i++) {
-    		Vector<Object> list = new Vector<>();
-			list.add("absolute");
-			list.add("HW"+i);
-			list.add(100);
-			list.add(20);
-			data.add(list);
-    	}
+		assignments = new ArrayList<Assignment>();
+		for(Assignment a :course.getAssignments()) 
+			assignments.add(new Assignment(a));
 		settingTable();
 		mainPanel.add(listPanel,BorderLayout.CENTER);
 		
@@ -70,8 +72,8 @@ public class AssignmentPage extends JPanel implements ActionListener
 		tPanel1.add(aTypeBox);
 		
 		JPanel tPanel2 = new JPanel();
-		tPanel2.add(aDesc);
-		tPanel2.add(aDescText);
+		tPanel2.add(aName);
+		tPanel2.add(aNameText);
 		
 		JPanel tPanel3 = new JPanel();
 		tPanel3.add(aCredit);
@@ -104,33 +106,124 @@ public class AssignmentPage extends JPanel implements ActionListener
 		confirm.addActionListener(this);
 		save.addActionListener(this);
 		tLoad.addActionListener(this);
+		aTypeBox.addActionListener(this);
 		this.setVisible(true);
 	}
 	
 	private void settingTable() {
-		jTable = new JTable(new CustomizedTable(columnNames,data));
-		//DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
-	    //singleclick.setClickCountToStart(1);
-	    //set the editor as default on every column
-	    //for (int i = 0; i < jTable.getColumnCount(); i++) {
-	    	//jTable.setDefaultEditor(jTable.getColumnClass(i), singleclick);
-	    //}
-	    jTable.addMouseListener(new MouseAdapter(){
-	    	public void mouseClicked(MouseEvent e) {
-	    		selectedIndex = jTable.getSelectedRow();
-	    		System.out.println("selectedIndex:"+selectedIndex);
-	     	}
-	    });
+		data.clear();
+		for(Assignment a : assignments) {
+    		Vector<Object> list = new Vector<>();
+    		list.add(a.getType());
+			list.add(a.getName());
+			list.add(a.getDescription());
+			list.add(a.getFullCredit());
+			list.add(a.getWeight());
+			data.add(list);
+    	}
+		jTable = new JTable(new CustomizedTable(columnNames,data,set,this));
+		jTable.putClientProperty("terminateEditOnFocusLost", true);
     	jScrollPane = new JScrollPane(jTable);
-    	jScrollPane.setBounds(62, 34, 624, 185);
     	listPanel.add(jScrollPane);
 	}
 	
-	public void refreshCourseList() {
+	public void refreshAssignmentList() {
 		listPanel.removeAll();
+		aNameText.setText(null);
+		aCreditText.setText(null);
+		aWeightText.setText(null);
+		settingTable();
 		listPanel.updateUI();
 	}
+	
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource() == add) { //add a new assignment to unconfirmed assignments
+			if(aNameText.getText().isEmpty()||aCreditText.getText().isEmpty()||aWeightText.getText().isEmpty()) {
+            	JOptionPane.showMessageDialog(getParent(), "Please fill all the blanks!");
+			}else if(aTypeBox.getSelectedIndex()==-1) {
+            	JOptionPane.showMessageDialog(getParent(), "Please select an assignment Type!");
+			}else {
+				String type = aTypeBox.getSelectedItem().toString();
+				System.out.println(type);
+				String name = aNameText.getText();
+				Double credit = Double.valueOf(aCreditText.getText());
+				Double weight = Double.valueOf(aWeightText.getText());
+				Assignment temp = new Assignment(type, name, "", credit, weight);
+				assignments.add(temp);
+				refreshAssignmentList();
+			}
+		}
+		else if(e.getSource()==delete) {
+			if (jTable.getSelectedRow() == -1){
+                JOptionPane.showMessageDialog(getParent(), "Please select the assignment you want to delete.");
+                return;
+            }
+			assignments.remove(jTable.getSelectedRow());
+			refreshAssignmentList();	
+		}
+		if(e.getSource() == confirm) { //teacher is trying to confirm a new assignment configuration for the course
+			if(ValidateAssignmentWeights()) {
+				course.setAssignments(assignments);
+			}
+			else {
+				JOptionPane.showMessageDialog(getParent(), "Please re-adjust the of weight of assignments.");
+			}
+		}
+		if(e.getSource() == save) { //teacher is trying to save this assignment template
+			if(ValidateAssignmentWeights()) {
+				GradingSystem.getInstance().getAssignmentTemplate().clear();
+				for(Assignment a : assignments) 
+					GradingSystem.getInstance().getAssignmentTemplate().add(new Assignment(a));
+			}
+			else {
+				JOptionPane.showMessageDialog(getParent(), "Please re-adjust the of weight of assignments.");
+			}
+		}	
+		if(e.getSource() == tLoad) { //teacher is trying to load a previous assignment structure template
+			assignments = new ArrayList<Assignment>();
+			for(Assignment a : GradingSystem.getInstance().getAssignmentTemplate()) 
+				assignments.add(new Assignment(a));
+			refreshAssignmentList();
+		}
+	}
+	
+	public void test() {
+		for(Assignment a : assignments) 
+			System.out.println(a.getID()+" "+a.getName()+" "+a.getType()+" "+a.getDescription()+" "+
+					a.getFullCredit()+" "+a.getWeight());
+	}
+	
+	//checks that unconfirmed assignment weights add to 1
+	private boolean ValidateAssignmentWeights() {
+		Double totalWeight = 0.0;
+		for(Assignment a : assignments) {
+			totalWeight += a.getWeight();
+		}
+		return totalWeight == 1.0;
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e)
+	{
+		if (e.getType() == TableModelEvent.UPDATE) {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+            String colName = jTable.getColumnName(column);
+            Object content = jTable.getValueAt(row, column);
+            switch(colName) {
+				case "Name":
+					assignments.get(row).setName(content.toString());
+					break;
+				case "Description":
+					assignments.get(row).setDescription(content.toString());
+					break;	
+				case "Full Credits":
+					assignments.get(row).setFullCredit(Double.valueOf(content.toString()));
+					break;
+				case "Weight":
+					assignments.get(row).setWeight(Double.valueOf(content.toString()));
+					break;
+            }
+        }
 	}
 }

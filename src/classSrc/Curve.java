@@ -2,13 +2,19 @@ package classSrc;
 
 public abstract class Curve {
 	
-	public Double amount;
+	private Double amount;
 	
-	Curve(Double amount_){
-		amount = amount_;
+	public Curve(Double amount){
+		this.amount = amount;
 	}
 	
-	abstract public Double calculateCurvedScore(Double pointsEarned, Double totalPoints);
+	public Double getAmount() {
+		return this.amount;
+	}
 	
-
+	public void setAmount(Double amount) {
+		this.amount = amount;
+	}
+	
+	abstract public Double calculateCurvedPart(Double plainScore);
 }

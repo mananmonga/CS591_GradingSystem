@@ -18,6 +18,7 @@ public class Grade {
 		comments = comments_;
 	}
 	
+	/*
 	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
 	public Double CalculatePercentageScore(boolean curved) {
 		if(assignment.hasCurve() && curved) { //check if the assignment is actually curved first
@@ -32,5 +33,5 @@ public class Grade {
 	public String toString() {
 		return assignment.GetScoreDisplay(credit);
 	}
-	
+	*/
 }

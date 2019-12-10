@@ -8,12 +8,12 @@ import classSrc.*;
 public class CourseFrame extends JFrame implements ActionListener
 {
 	JPanel introPage = new JPanel(new BorderLayout());
-	StudentPage studentPage = new StudentPage();
-	AssignmentPage assignmentPage = new AssignmentPage();
+	StudentPage studentPage;
+	AssignmentPage assignmentPage;
 	StudentStatsPage studentStatsPage = new StudentStatsPage();
 	CourseStatsPage courseStatsPage = new CourseStatsPage();
 	GradingPage gradingPage = new GradingPage();
-	CurvePage curvePage = new CurvePage();
+	CurvePage curvePage;
 	JMenuItem grading, assignment, student, curve, studentInfo, courseInfo;
 	JMenuBar menuBar;
 	JMenu main, setting, view;
@@ -24,7 +24,11 @@ public class CourseFrame extends JFrame implements ActionListener
 	Course course;
 	
 	public CourseFrame(Course course_) {
-		this.frameTitle = "CS591 "+ "OOD";
+		this.course = course_;
+		this.frameTitle = course.getID() + " " + course_.getName();
+		this.assignmentPage = new AssignmentPage(course);
+		this.studentPage = new StudentPage(course);
+		this.curvePage = new CurvePage(course);
 		initFrame();
 		initMenubar();
 		arrangePanel();

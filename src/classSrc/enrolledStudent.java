@@ -2,9 +2,9 @@ package classSrc;
 
 import java.util.ArrayList;
 
-public class enrolledStudent extends Person {
-    ArrayList<Grade> grades;
-    Double bonusPoints;
+public class EnrolledStudent extends Person {
+    ArrayList<Grade> grades = new ArrayList<Grade>();;
+    Double bonusPoints = 0.0;
 
     public ArrayList<Grade> getGrades() {
         return grades;
@@ -30,10 +30,14 @@ public class enrolledStudent extends Person {
     	return this.ID;
     }
 
-    public enrolledStudent(String name, String ID) {
+    public EnrolledStudent(String name, String ID) {
         super(name, ID);
-        bonusPoints = 0.0;
-        grades = new ArrayList<Grade>();
+    }
+    
+    public EnrolledStudent(EnrolledStudent s) {
+        super(s.getName(),s.getID());
+        this.bonusPoints = s.getBonus();
+        this.grades = s.getGrades();
     }
     
     public void AddGrade(Grade g) {
@@ -49,11 +53,11 @@ public class enrolledStudent extends Person {
             return true; 
         } 
   
-        if (!(other instanceof enrolledStudent)) { 
+        if (!(other instanceof EnrolledStudent)) { 
             return false; 
         } 
           
-        enrolledStudent otherStudent = (enrolledStudent)other; 
+        EnrolledStudent otherStudent = (EnrolledStudent)other; 
           
         return this.ID == otherStudent.ID;
     }

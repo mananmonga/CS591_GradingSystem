@@ -2,17 +2,16 @@ package classSrc;
 
 public class PercentageCurve extends Curve{
 
-	PercentageCurve(Double amount_) {
-		super(amount_);
+	PercentageCurve(Double amount) {
+		super(amount);
 	}
 	
 	PercentageCurve(){ //no amount specified
-		super(1.0);
+		super(0.0);
 	}
 
 	@Override
-	public Double calculateCurvedScore(Double pointsEarned, Double totalPoints) {
-		return (pointsEarned/totalPoints) * amount;
-	}
-
+	public Double calculateCurvedPart(Double plainScore) {
+		return this.getAmount()*0.01*plainScore;
+	};
 }

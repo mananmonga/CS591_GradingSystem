@@ -72,3 +72,9 @@ public class GradingPage extends JPanel implements ActionListener
 		
 	}
 }
+//DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
+//singleclick.setClickCountToStart(1);
+//set the editor as default on every column
+//for (int i = 0; i < jTable.getColumnCount(); i++) {
+	//jTable.setDefaultEditor(jTable.getColumnClass(i), singleclick);
+//}

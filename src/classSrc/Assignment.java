@@ -1,32 +1,47 @@
 package classSrc;
 
-abstract public class Assignment {
-	public String ID;
-	public String type;
-	public String name;
-	public String description;
-	public Double totalCredit;
-	public Double weight;
-	public Curve curve;
-	public AssignmentScoringType scoringType;
-	
-	
-	Assignment(){
-		type = "Assignment";
-		name = "Assignment";
-		description = "No description available.";
-		totalCredit = 100.0;
-		weight = 0.1;
-		ID = "999999999";
-		curve = null;
-	}
+public class Assignment {
+	private String ID;
+	private GradingType gradingType;
+	private String name;
+	private String description = "";
+	private Double fullCredit;
+	private Double weight;
+	private Curve curve = null;
 
+	public Assignment(String type_, String name_, String description_, Double fullCredit_, Double weight_){
+		this.ID = UIUDGenerator.getUUID();
+		this.setType(type_);
+		this.name = name_;
+		this.description = description_;
+		this.fullCredit = fullCredit_;
+		this.weight = weight_;
+	}
+	
+	
+	public Assignment(Assignment ass){
+		this.ID = ass.getID();
+		this.setType(ass.getType());
+		this.name = ass.getName();
+		this.description = ass.getDescription();
+		this.fullCredit = ass.getFullCredit();
+		this.weight = ass.getWeight();
+		this.curve = ass.getCurve();
+	}
+	
+	public String getID() {
+		return this.ID;
+	}
+	
 	public String getType() {
-		return type;
+		return gradingType.toString();
 	}
 
 	public void setType(String type) {
-		this.type = type;
+		if(type.equals(GradingType.Absolute.toString()))
+			this.gradingType = GradingType.Absolute;
+		else if(type.equals(GradingType.Deduction.toString()))
+			this.gradingType = GradingType.Deduction;
 	}
 
 	public String getName() {
@@ -45,12 +60,12 @@ abstract public class Assignment {
 		this.description = description;
 	}
 
-	public Double getTotalCredit() {
-		return totalCredit;
+	public Double getFullCredit() {
+		return fullCredit;
 	}
 
-	public void setTotalCredit(Double totalCredit) {
-		this.totalCredit = totalCredit;
+	public void setFullCredit(Double fullCredit) {
+		this.fullCredit = fullCredit;
 	}
 
 	public Double getWeight() {
@@ -68,50 +83,16 @@ abstract public class Assignment {
 	public void setCurve(Curve curve) {
 		this.curve = curve;
 	}
-
-	Assignment(String ID_, String type_, String name_, String description_, Double totalCredit_, Double weight_, Curve curve_){
-		type = type_;
-		name = name_;
-		description = description_;
-		totalCredit = totalCredit_;
-		weight = weight_;
-		curve = curve_;
-		ID = ID_;
-	}
 	
 	public boolean hasCurve() {
 		return curve != null;
 	}
 	
-	//must implement equals method so that an assignment can be removed from Course.Assignments
-    @Override
-    public boolean equals(Object other) {
-    	  
-        if (other == this) { 
-            return true; 
-        } 
-  
-        if (!(other instanceof Assignment)) { 
-            return false; 
-        } 
-          
-        Assignment otherAssignment = (Assignment)other; 
-          
-        return this.ID == otherAssignment.ID;
-    }
-	
 	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
-	public Double CalculatePercentageScore(Double score, boolean curved) {
-		if(hasCurve() && curved) { //check if the assignment is actually curved first
-			return curve.calculateCurvedScore(score, totalCredit);
-		}
-		else {
-			return (score / totalCredit);
-		}
-	}
+	//abstract public Double CalculatePercentageScore(Double score, boolean curved);
 	
 	//returns a string representation of a student's grade on the assignment. Called from instances of Grade.java
 	//string representation varies depending on the type of assignment (deducted score vs absolute score)
-	abstract public String GetScoreDisplay(Double score);
+	//abstract public String GetScoreDisplay(Double score);
 
 }

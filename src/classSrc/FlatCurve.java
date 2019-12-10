@@ -2,17 +2,16 @@ package classSrc;
 
 public class FlatCurve extends Curve{
 
-	FlatCurve(Double amount_) {
-		super(amount_);
+	public FlatCurve(Double amount) {
+		super(amount);
 	}
 	
-	FlatCurve(){ //no amount specified
+	public FlatCurve(){ //no amount specified
 		super(0.0);
 	}
 
-	@Override
-	public Double calculateCurvedScore(Double pointsEarned, Double totalPoints) {
-		return (pointsEarned + amount) / totalPoints;
-	}
+	public Double calculateCurvedPart(Double plainScore) {
+		return this.getAmount();
+	};
 
 }

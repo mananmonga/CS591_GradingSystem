@@ -8,6 +8,13 @@ abstract public class Person {
         this.name = name;
         this.ID = ID;
     }
+    
+    public void setName(String name) {
+    	this.name = name;
+    }
 
+    public void setID(String id) {
+    	this.ID = id;
+    }
 }
 

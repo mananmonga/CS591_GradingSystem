@@ -1,30 +1,53 @@
 package classSrc;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Course {
     private String name;
+    private String UIUD;
     private String ID;
-    private String description;
-    private Curve curve;
-    public ArrayList<enrolledStudent> enrolledStudents;
-    public ArrayList<Assignment> assignments;
+    private String description = "";
+    private Date createDate;
+    private Curve curve = null;
+    private ArrayList<EnrolledStudent> enrolledStudents = new ArrayList<EnrolledStudent>();
+    private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
     
+    public Course() {
+    	this.UIUD = UIUDGenerator.getUUID();
+    	this.ID = "CS12345";
+    	this.name = "Empty Course";
+    	this.createDate = new Date();
+    }
 
+    public Course(String name, String ID) {
+        this.name = name;
+        this.UIUD = UIUDGenerator.getUUID();
+        this.ID = ID;
+        this.createDate = new Date();
+    }
+    
+    public String getCreateDate() {
+		return createDate.toString();
+	}
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
 
+    public String getUIUD() {
+        return UIUD;
+    }
+    
+    public void setID(String id) {
+        this.ID = id;
+    }
+    
     public String getID() {
         return ID;
-    }
-
-    public void setID(String ID) {
-        this.ID = ID;
     }
 
     public String getDescription() {
@@ -43,43 +66,26 @@ public class Course {
         this.curve = curve;
     }
     
-    public boolean isCurved() {
+    public boolean hasCurve() {
     	return this.curve != null;
     }
     
-    public Course() {
-    	this.name = "Empty Course";
-    	this.ID = "999999999";
-    	this.description = "Empty Description";
-    	enrolledStudents = new ArrayList<enrolledStudent>();
-    	assignments = new ArrayList<Assignment>();
-    }
-
-    public Course(String name, String ID, String description) {
-        this.name = name;
-        this.ID = ID;
-        this.description = description;
-        enrolledStudents = new ArrayList<enrolledStudent>();
-    	assignments = new ArrayList<Assignment>();
+    public ArrayList<Assignment> getAssignments(){
+    	return this.assignments;
     }
     
-    //must implement equals method so that a course can be removed from Teacher.courses
-    @Override
-    public boolean equals(Object other) {
-    	  
-        if (other == this) { 
-            return true; 
-        } 
-  
-        if (!(other instanceof Course)) { 
-            return false; 
-        } 
-          
-        Course otherCourse = (Course)other; 
-          
-        return this.ID == otherCourse.ID;
+    public void setAssignments(ArrayList<Assignment> ass){
+    	this.assignments = ass;
     }
     
+    public ArrayList<EnrolledStudent> getEnrollStudent(){
+    	return this.enrolledStudents;
+    }
+    
+    public void setEnrollStudent(ArrayList<EnrolledStudent> stu){
+    	this.enrolledStudents = stu;
+    }
+    /*    
     public void EnrollStudent(enrolledStudent es) {
     	enrolledStudents.add(es);
     	//TODO: ADD ENROLLEDSTUDENT TO DATABASE
@@ -148,18 +154,18 @@ public class Course {
         int n1 = m - l + 1; 
         int n2 = r - m; 
   
-        /* Create temp arrays */
+        // Create temp arrays 
         enrolledStudent[] L = new enrolledStudent [n1]; 
         enrolledStudent[] R = new enrolledStudent [n2]; 
   
-        /*Copy data to temp arrays*/
+        //Copy data to temp arrays
         for (int i=0; i<n1; ++i) 
             L[i] = es[l + i]; 
         for (int j=0; j<n2; ++j) 
             R[j] = es[m + 1+ j]; 
   
   
-        /* Merge the temp arrays */
+        // Merge the temp arrays 
   
         // Initial indexes of first and second subarrays 
         int i = 0, j = 0; 
@@ -181,7 +187,7 @@ public class Course {
             k++; 
         } 
   
-        /* Copy remaining elements of L[] if any */
+        // Copy remaining elements of L[] if any 
         while (i < n1) 
         { 
             es[k] = L[i]; 
@@ -189,7 +195,7 @@ public class Course {
             k++; 
         } 
   
-        /* Copy remaining elements of R[] if any */
+        // Copy remaining elements of R[] if any 
         while (j < n2) 
         { 
             es[k] = R[j]; 
@@ -215,5 +221,5 @@ public class Course {
             merge(es, l, m, r); 
         } 
     } 
-    
+    */
 }

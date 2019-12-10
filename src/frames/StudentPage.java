@@ -4,11 +4,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 
-import classSrc.ReadExcel;
-import classSrc.SelectFile;
-
-public class StudentPage extends JPanel implements ActionListener
+public class StudentPage extends JPanel implements ActionListener, TableModelListener
 {	
 	JLabel sId = new JLabel("Student ID:");
 	JLabel sName = new JLabel("Student Name:");
@@ -26,9 +24,14 @@ public class StudentPage extends JPanel implements ActionListener
     String[] columnNames = {"Student Name", "Student ID", "Section"};
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
-    int selectedIndex = -1;
-	public StudentPage()
-	{ 	//organize panel
+    HashSet<String> set = new HashSet<String>();
+    Course course;
+    ArrayList<EnrolledStudent> students;
+    
+	public StudentPage(Course course_)
+	{ 	
+		this.course = course_;
+		//organize panel
 		this.setLayout(new BorderLayout());
 		JLabel label = new JLabel("Student Setting", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
@@ -43,14 +46,10 @@ public class StudentPage extends JPanel implements ActionListener
 		mainPanel.add(loadPanel,BorderLayout.NORTH);
 		
 		//Try new thing
-    	for(int i =0 ;i < 3;i++) {
-    		Vector<Object> list = new Vector<>();
-			list.add("liao "+i);
-			list.add("U"+i);
-			list.add(i);
-			data.add(list);
-    	}
-    	settingTable();
+    	students = new ArrayList<EnrolledStudent>();
+		for(EnrolledStudent s :course.getEnrollStudent()) 
+			students.add(new EnrolledStudent(s));
+		settingTable();
 		mainPanel.add(listPanel,BorderLayout.CENTER);
 		
 		//organize inputPanel
@@ -76,75 +75,84 @@ public class StudentPage extends JPanel implements ActionListener
 	}
 	
 	private void settingTable() {
-		jTable = new JTable(new CustomizedTable(columnNames,data));
-	    jTable.addMouseListener(new MouseAdapter(){
-	    	public void mouseClicked(MouseEvent e) {
-	    		selectedIndex = jTable.getSelectedRow();
-	    		System.out.println("selectedIndex:"+selectedIndex);
-	     	}
-	    });
+		data.clear();
+		for(EnrolledStudent s : students) {
+    		Vector<Object> list = new Vector<>();
+    		list.add(s.getName());
+			list.add(s.getID());
+			list.add("");
+			data.add(list);
+    	}
+		jTable = new JTable(new CustomizedTable(columnNames,data,set,this));
     	jScrollPane = new JScrollPane(jTable);
-    	jScrollPane.setBounds(62, 34, 624, 185);
+    	jTable.putClientProperty("terminateEditOnFocusLost", true);
     	listPanel.add(jScrollPane);
 	}
 	
-	public void refreshCourseList(Vector<Vector<Object>> data) {
+	public void refreshStudentList() {
 		listPanel.removeAll();
 		sNameText.setText(null);
 		sIdText.setText(null);
 		settingTable();
-		selectedIndex = -1;
 		listPanel.updateUI();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==sLoad) {
 			try {
-				data.clear();
-				data = ReadExcel.getSheet(SelectFile.select());
-				for(int i = 0; i<data.size();i++ )
-					System.out.print(data.get(i).get(0)+" "+data.get(i).get(1));
-				refreshCourseList(data);
+				
+				students = new ArrayList<EnrolledStudent>();
+				Vector<Vector<Object>> tmp = ReadExcel.getSheet(SelectFile.select());
+				for(int i = 0; i<tmp.size(); i++)
+					students.add(new EnrolledStudent(tmp.get(i).get(0).toString(),tmp.get(i).get(1).toString()));
+				refreshStudentList();
 			}
 			catch(Exception exception) {
 				System.out.println(exception);
 			}
 		}
 		if(e.getSource()==confirm) {
-			int numRows = jTable.getRowCount();
-	        int numCols = jTable.getColumnCount();
-
-	        for (int i=0; i < numRows; i++) {
-	            System.out.print("    row " + i + ":");
-	            for (int j=0; j < numCols; j++) {
-	                System.out.print("  " + jTable.getValueAt(i, j));
-	            }
-	            System.out.println();
-	        }
+			course.setEnrollStudent(students);
 		}
 		if(e.getSource()==add) {
 			if(sNameText.getText().isEmpty()) {
-            	JOptionPane.showMessageDialog(getParent(), "Please input the name of Student!");
+            	JOptionPane.showMessageDialog(getParent(), "Please input the name of student!");
 			}else if(sIdText.getText().isEmpty()) {
-            	JOptionPane.showMessageDialog(getParent(), "Please input the ID of Student!");
+            	JOptionPane.showMessageDialog(getParent(), "Please input the ID of student!");
 			}else {
 				String name = sNameText.getText();
 				String id = sIdText.getText();
-				Vector<Object> list = new Vector<>();
-				list.add(name);
-				list.add(id);
-				list.add(null);
-				data.add(list);
-				refreshCourseList(data);
+				EnrolledStudent temp = new EnrolledStudent(name, id);
+				students.add(temp);
+				refreshStudentList();
 			}
 		} 
 		if(e.getSource()==delete) {
-			if (selectedIndex == -1){
+			if (jTable.getSelectedRow() == -1){
                 JOptionPane.showMessageDialog(getParent(), "Please select the student you want to delete.");
                 return;
-            }
-			data.remove(selectedIndex);
-        	refreshCourseList(data);
+            }	
+			students.remove(jTable.getSelectedRow());
+			refreshStudentList();
 		}
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e)
+	{
+		if (e.getType() == TableModelEvent.UPDATE) {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+            String colName = jTable.getColumnName(column);
+            Object content = jTable.getValueAt(row, column);
+            switch(colName) {
+				case "Student Name":
+					students.get(row).setName(content.toString());
+					break;
+				case "Student ID":
+					students.get(row).setID(content.toString());
+					break;	
+            }
+        }
 	}
 }
