@@ -1,7 +1,7 @@
 package classSrc;
 import java.util.UUID;
 
-public class UIUDGenerator
+public class UUIDGenerator
 {
 	public static String getUUID() {
 		UUID uuid = UUID.randomUUID();
@@ -9,4 +9,5 @@ public class UIUDGenerator
 		String uuidStr = str.substring(0,15);
 		return uuidStr;
 	}
+	
 }

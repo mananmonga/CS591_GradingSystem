@@ -25,7 +25,7 @@ public class CourseFrame extends JFrame implements ActionListener
 	
 	public CourseFrame(Course course_) {
 		this.course = course_;
-		this.frameTitle = course.getID() + " " + course_.getName();
+		this.frameTitle = course.getCode() + " " + course_.getName();
 		this.assignmentPage = new AssignmentPage(course);
 		this.studentPage = new StudentPage(course);
 		this.curvePage = new CurvePage(course);

@@ -79,7 +79,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
 		data.clear();
 		for(Course c : courses) {
     		Vector<Object> list = new Vector<>();
-			list.add(c.getID());
+			list.add(c.getCode());
 			list.add(c.getName());
 			list.add(c.getDescription());
 			list.add(c.getCreateDate());
@@ -142,7 +142,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
             Object content = jTable.getValueAt(row, column);
             switch(colName) {
 				case "Course ID":
-					courses.get(row).setID(content.toString());
+					courses.get(row).setCode(content.toString());
 					break;
 				case "Course Name":
 					courses.get(row).setName(content.toString());

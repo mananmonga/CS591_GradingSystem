@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Course {
     private String name;
-    private String UIUD;
-    private String ID;
+    private String UID;
+    private String Code;
     private String description = "";
     private Date createDate;
     private Curve curve = null;
@@ -13,16 +13,16 @@ public class Course {
     private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
     
     public Course() {
-    	this.UIUD = UIUDGenerator.getUUID();
-    	this.ID = "CS12345";
+    	this.UID = UUIDGenerator.getUUID();
+    	this.Code = "CS12345";
     	this.name = "Empty Course";
     	this.createDate = new Date();
     }
 
     public Course(String name, String ID) {
         this.name = name;
-        this.UIUD = UIUDGenerator.getUUID();
-        this.ID = ID;
+        this.UID = UUIDGenerator.getUUID();
+        this.Code = ID;
         this.createDate = new Date();
     }
     
@@ -38,16 +38,16 @@ public class Course {
         this.name = name;
     }
 
-    public String getUIUD() {
-        return UIUD;
+    public String getUID() {
+        return UID;
     }
     
-    public void setID(String id) {
-        this.ID = id;
+    public void setCode(String Code) {
+        this.Code = Code;
     }
     
-    public String getID() {
-        return ID;
+    public String getCode() {
+        return this.Code;
     }
 
     public String getDescription() {
