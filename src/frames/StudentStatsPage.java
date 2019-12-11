@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
+import classSrc.*;
+
+
 public class StudentStatsPage extends JPanel implements ActionListener
 {	
 
@@ -16,28 +19,31 @@ public class StudentStatsPage extends JPanel implements ActionListener
 	JLabel id1 = new JLabel("ID:");
 	JTextField nameText = new JTextField("",10);
 	JTextField idText = new JTextField("",10);
-    JPanel listPanel = new JPanel();
+    JPanel listPanel = new JPanel(new BorderLayout());
     JPanel inputPanel = new JPanel(new GridLayout(3,1,10,5));
+    EnrolledStudent student = null;
+    JScrollPane jScrollPane;
+    String[] columnNames = {"Assignment", "Credit", "Comments"};
+    HashSet<String> set = new HashSet<String>() {{
+    	add("Assignment");
+    }};
+    JTable jTable;
+    Vector<Vector<Object>> data = new Vector<>();
+    Course course;
 	
-	public StudentStatsPage()
-	{ 	//organize panel
+	public StudentStatsPage(Course course_)
+	{ 	
+		this.course = course_;
+		//organize panel
 		this.setLayout(new BorderLayout());
 		JLabel label = new JLabel("Student Statistics", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
 		this.add(label,BorderLayout.NORTH);
 		this.add(listPanel,BorderLayout.CENTER);
 		this.add(inputPanel,BorderLayout.SOUTH);
-		
-		//organize listPanel
-		JPanel showPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		String studentName = "Name: " + "Sean";
-		String studentID = "ID: " + "U1106";
-		name = new JLabel(studentName);
-		id = new JLabel(studentID);
-		showPanel.add(name);
-		showPanel.add(new JLabel("    "));
-		showPanel.add(id);
-		listPanel.add(showPanel,BorderLayout.NORTH);
+				
+		//organaize listPanel
+		settingTable();
 		
 		//organize inputPanel
 		JPanel textPanel = new JPanel();
@@ -58,11 +64,68 @@ public class StudentStatsPage extends JPanel implements ActionListener
 		this.setVisible(true);
 	}
 	
-	public void refreshCourseList() {
+	private void settingTable() {
+		JPanel showPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		name = new JLabel("Name: ");
+		id = new JLabel("ID: ");
+		showPanel.add(name);
+		showPanel.add(new JLabel("    "));
+		showPanel.add(id);
+		listPanel.add(showPanel,BorderLayout.NORTH);
+		data.clear();
+		if(student!=null) {
+			for(Grade g : student.getGrades()) {
+    			Vector<Object> list = new Vector<>();
+    	    	list.add(g.getAssignment().getName());
+    			list.add(g.getCredit());
+ 				list.add(g.getComment());
+ 				data.add(list);
+    		}
+    		Vector<Object> list = new Vector<>();
+	    	list.add("Bonus Point");
+			list.add(student.getBonus());
+			list.add(student.getComment());
+			data.add(list);
+		}
+		jTable = new JTable(new CustomizedTable(columnNames,data,set,null));
+    	jScrollPane = new JScrollPane(jTable);
+    	jTable.putClientProperty("terminateEditOnFocusLost", true);
+    	listPanel.add(jScrollPane,BorderLayout.CENTER);
+	}
+	
+	public void refreshStudentStatsList() {
 		listPanel.removeAll();
+		settingTable();
 		listPanel.updateUI();
 	}
 	public void actionPerformed(ActionEvent e) {
-		
+		if (e.getSource()==search){
+			if(nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
+            	JOptionPane.showMessageDialog(getParent(), "Please fill in the blank!");
+            	return;
+			}else if(nameText.getText().isEmpty()&&!idText.getText().isEmpty()) {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getID().equals(idText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}else if(!nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getName().equals(nameText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}else {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getName().equals(nameText.getText().toString())&&s.getID().equals(idText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}
+			refreshStudentStatsList();
+        }
 	}
 }

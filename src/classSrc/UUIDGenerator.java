@@ -9,5 +9,4 @@ public class UUIDGenerator
 		String uuidStr = str.substring(0,15);
 		return uuidStr;
 	}
-	
 }

@@ -4,8 +4,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.table.*;
 
-public class GradingPage extends JPanel implements ActionListener
+import classSrc.*;
+
+
+public class GradingPage extends JPanel implements ActionListener, SettingChangeListener
 {	
 	JButton view = new JButton("     View Student     ");
 	JButton save = new JButton("      Save Grade      ");
@@ -22,8 +26,22 @@ public class GradingPage extends JPanel implements ActionListener
     JPanel listPanel = new JPanel();
     JPanel inputPanel = new JPanel(new GridLayout(4,1,10,5));
 	
-	public GradingPage()
-	{ 	//organize panel
+    JScrollPane jScrollPane;
+    Vector<String> columnNames = new Vector<String>();
+    Vector<String> fixedColumn = new Vector<String>() {{
+    	add("Student ID");
+    	add("Student Name");
+    	add("Bonus");
+    }};
+
+    JTable jTable;
+    Vector<Vector<Object>> data = new Vector<>();
+    Course course;
+    
+	public GradingPage(Course course_)
+	{ 	
+		this.course = course_;
+		//organize panel
 		this.setLayout(new BorderLayout());
 		JLabel label = new JLabel("Grading Page", SwingConstants.CENTER);
 		label.setFont(new Font(Font.DIALOG, Font.BOLD, 16));
@@ -35,6 +53,10 @@ public class GradingPage extends JPanel implements ActionListener
 		switchPanel.add(tSection);
 		switchPanel.add(sectionBox);
 		mainPanel.add(switchPanel,BorderLayout.NORTH);
+		
+		mainPanel.setPreferredSize(new Dimension(700,630));
+		settingTable();
+		listPanel.setPreferredSize(new Dimension(700,630));
 		mainPanel.add(listPanel,BorderLayout.CENTER);
 		
 		//organize inputPanel
@@ -64,12 +86,51 @@ public class GradingPage extends JPanel implements ActionListener
 		this.setVisible(true);
 	}
 	
-	public void refreshCourseList() {
+	private void settingTable() {
+		columnNames.clear();
+		columnNames.addAll(fixedColumn);
+		for(Assignment a : course.getAssignments()) {
+			columnNames.add(a.getName());
+    	}
+		data.clear();
+		for(EnrolledStudent s :course.getEnrollStudent()) {
+    		Vector<Object> list = new Vector<>();
+    		list.add(s.getID());
+    		list.add(s.getName());
+			list.add(s.getBonus());
+			while(list.size()<columnNames.size()) {
+				list.add("");
+			}
+			data.add(list);
+    	}
+		DefaultTableModel myModel = new DefaultTableModel(data,columnNames) {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		    	if(column<2)
+		    		return false;
+		        return true;
+		    }
+		};
+		jTable = new JTable(myModel);
+		jTable.putClientProperty("terminateEditOnFocusLost", true);
+    	jScrollPane = new JScrollPane(jTable);
+    	jScrollPane.setPreferredSize(new Dimension(700,630));
+    	listPanel.add(jScrollPane);
+	}
+	
+	public void refreshGradeList() {
 		listPanel.removeAll();
+		settingTable();
 		listPanel.updateUI();
 	}
 	public void actionPerformed(ActionEvent e) {
 		
+	}
+
+	@Override
+	public void updatePage()
+	{
+		refreshGradeList();
 	}
 }
 //DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());

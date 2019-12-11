@@ -47,7 +47,7 @@ public class Course {
     }
     
     public String getCode() {
-        return this.Code;
+        return Code;
     }
 
     public String getDescription() {

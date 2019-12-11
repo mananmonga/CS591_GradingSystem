@@ -27,6 +27,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
     HashSet<String> set = new HashSet<String>();
     Course course;
     ArrayList<EnrolledStudent> students;
+    HashMap<String,SettingChangeListener> listeners = new HashMap<String,SettingChangeListener>();
     
 	public StudentPage(Course course_)
 	{ 	
@@ -113,6 +114,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 		}
 		if(e.getSource()==confirm) {
 			course.setEnrollStudent(students);
+			notifyALLListener();
 		}
 		if(e.getSource()==add) {
 			if(sNameText.getText().isEmpty()) {
@@ -137,6 +139,15 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 		}
 	}
 
+	public void addListener(String page, SettingChangeListener listener) {
+		this.listeners.put(page,listener);
+	}
+	
+	public void notifyALLListener() {
+		for(String key:listeners.keySet()) 
+			listeners.get(key).updatePage();
+	}
+	
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{

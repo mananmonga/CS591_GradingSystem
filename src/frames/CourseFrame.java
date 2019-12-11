@@ -10,9 +10,9 @@ public class CourseFrame extends JFrame implements ActionListener
 	JPanel introPage = new JPanel(new BorderLayout());
 	StudentPage studentPage;
 	AssignmentPage assignmentPage;
-	StudentStatsPage studentStatsPage = new StudentStatsPage();
+	StudentStatsPage studentStatsPage;
 	CourseStatsPage courseStatsPage = new CourseStatsPage();
-	GradingPage gradingPage = new GradingPage();
+	GradingPage gradingPage;
 	CurvePage curvePage;
 	JMenuItem grading, assignment, student, curve, studentInfo, courseInfo;
 	JMenuBar menuBar;
@@ -26,9 +26,14 @@ public class CourseFrame extends JFrame implements ActionListener
 	public CourseFrame(Course course_) {
 		this.course = course_;
 		this.frameTitle = course.getCode() + " " + course_.getName();
+		this.gradingPage = new GradingPage(course);
 		this.assignmentPage = new AssignmentPage(course);
 		this.studentPage = new StudentPage(course);
+		this.studentStatsPage = new StudentStatsPage(course);
 		this.curvePage = new CurvePage(course);
+		this.assignmentPage.addListener("CurvePage",this.curvePage);
+		this.assignmentPage.addListener("GradingPage",this.gradingPage);
+		this.studentPage.addListener("GradingPage",this.gradingPage);
 		initFrame();
 		initMenubar();
 		arrangePanel();

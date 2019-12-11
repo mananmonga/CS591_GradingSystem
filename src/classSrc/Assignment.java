@@ -10,7 +10,7 @@ public class Assignment {
 	private Curve curve = null;
 
 	public Assignment(String type_, String name_, String description_, Double fullCredit_, Double weight_){
-		this.ID = UIUDGenerator.getUUID();
+		this.ID = UUIDGenerator.getUUID();
 		this.setType(type_);
 		this.name = name_;
 		this.description = description_;

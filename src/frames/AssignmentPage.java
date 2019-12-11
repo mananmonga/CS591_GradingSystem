@@ -41,6 +41,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
     }};
     Course course;
     ArrayList<Assignment> assignments;
+    HashMap<String,SettingChangeListener> listeners = new HashMap<String,SettingChangeListener>();
     
 	public AssignmentPage(Course course_)
 	{ 	
@@ -164,6 +165,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		if(e.getSource() == confirm) { //teacher is trying to confirm a new assignment configuration for the course
 			if(ValidateAssignmentWeights()) {
 				course.setAssignments(assignments);
+				notifyALLListener();
 			}
 			else {
 				JOptionPane.showMessageDialog(getParent(), "Please re-adjust the of weight of assignments.");
@@ -201,7 +203,16 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		}
 		return totalWeight == 1.0;
 	}
-
+	
+	public void addListener(String page, SettingChangeListener listener) {
+		this.listeners.put(page,listener);
+	}
+	
+	public void notifyALLListener() {
+		for(String key:listeners.keySet()) 
+			listeners.get(key).updatePage();
+	}
+	
 	@Override
 	public void tableChanged(TableModelEvent e)
 	{

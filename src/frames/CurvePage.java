@@ -8,7 +8,7 @@ import javax.swing.*;
 import classSrc.*;
 
 
-public class CurvePage extends JPanel implements ActionListener
+public class CurvePage extends JPanel implements ActionListener, SettingChangeListener
 {	
 
 	JButton confirm = new JButton("                         Confirm                         ");
@@ -96,11 +96,18 @@ public class CurvePage extends JPanel implements ActionListener
     	listPanel.add(jScrollPane);
 	}
 
-	public void refreshCourseList() {
+	public void refreshCurveList() {
 		listPanel.removeAll();
+		settingTable();
 		listPanel.updateUI();
 	}
 	public void actionPerformed(ActionEvent e) {
 		
+	}
+
+	@Override
+	public void updatePage()
+	{	
+		refreshCurveList();
 	}
 }

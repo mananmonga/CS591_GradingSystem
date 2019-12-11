@@ -2,9 +2,10 @@ package classSrc;
 
 import java.util.ArrayList;
 
-public class EnrolledStudent extends Person {
-    ArrayList<Grade> grades = new ArrayList<Grade>();;
-    Double bonusPoints = 0.0;
+public class EnrolledStudent extends Student {
+    private ArrayList<Grade> grades = new ArrayList<Grade>();;
+    private Double bonusPoints = 0.0;
+    private String comments ="";
 
     public ArrayList<Grade> getGrades() {
         return grades;
@@ -22,6 +23,14 @@ public class EnrolledStudent extends Person {
         this.bonusPoints = bonus;
     }
     
+    public void setComment(String com) {
+		this.comments = com;
+	}
+	
+	public String getComment() {
+		return this.comments;
+	}
+	
     public String getName() {
     	return this.name;
     }
