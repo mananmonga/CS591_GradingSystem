@@ -98,8 +98,12 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
+			
+			ArrayList<Grade> orderedGrades = course.GetStudentGradesInAssignmentOrder(s);
+			int i = 0;
+			
 			while(list.size()<columnNames.size()) {
-				list.add("");
+				list.add(orderedGrades.get(i).getCredit());
 			}
 			data.add(list);
     	}

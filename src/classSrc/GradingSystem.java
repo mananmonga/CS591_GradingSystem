@@ -19,6 +19,7 @@ public class GradingSystem
 	
 	private GradingSystem() {
 		//initBank();  //initialize bank with fixed data
+		
 	}
 	
 	public boolean LoginCheck(String Uid, String password) {
