@@ -12,14 +12,7 @@ public class databasetest {
 		
 		//Test Course
 		System.out.println("All Course");
-		ResultSet res = db.showCourse();
-		while(res.next()) {
-			String courseid = res.getString("CourseID");
-            String coursename = res.getString("CourseName");
-            
-            System.out.println("course id:" + courseid +"     "+"course name: " + coursename);
-            
-		}
+
 		System.out.println("\n");
 		
 		//test add section
@@ -28,7 +21,7 @@ public class databasetest {
 //		db.addSection(1, 2);
 //		db.addSection(2, 2);
 		System.out.println("All section for one course");
-		res = db.searchsection(2);
+		ResultSet res = db.searchsection(2);
 		while(res.next()) {
 			String courseid = res.getString("CourseID");
             String SectionID = res.getString("SectionID");
@@ -44,40 +37,40 @@ public class databasetest {
 //		db.addStudent("U22", "Hou");
 //		db.addStudent("U23", "You");
 //		db.addStudent("U24", "Ding");
-//		db.addStudent("U25", "Tan");
-		db.deleteStudent("U21");
-		//查学生test成功
-		System.out.println("Search One Student");
-		res = db.searchStudent("U20");
-		while(res.next()) {
-			String Studentid = res.getString("studentID");
-            String Studentname = res.getString("Name");
-            
-            System.out.println("Student id:" + Studentid +"     "+"Student name: " + Studentname);
-            
-		}
-		System.out.println("\n");
-		
-		//显示所有学生test成功
-		System.out.println("Search All Student");
-		res = db.showStudent();
-		while(res.next()) {
-			String Studentid = res.getString("studentID");
-            String Studentname = res.getString("Name");
-            
-            System.out.println("Student id:" + Studentid +"     "+"Student name: " + Studentname);
-            
-            
-            
-		}
-		System.out.println("\n");
+////		db.addStudent("U25", "Tan");
+//		db.deleteStudent("U21");
+//		//查学生test成功
+//		System.out.println("Search One Student");
+//		res = db.searchStudent("U20");
+//		while(res.next()) {
+//			String Studentid = res.getString("studentID");
+//            String Studentname = res.getString("Name");
+//            
+//            System.out.println("Student id:" + Studentid +"     "+"Student name: " + Studentname);
+//            
+//		}
+//		System.out.println("\n");
+//		
+//		//显示所有学生test成功
+//		System.out.println("Search All Student");
+//		res = db.showStudent();
+//		while(res.next()) {
+//			String Studentid = res.getString("studentID");
+//            String Studentname = res.getString("Name");
+//            
+//            System.out.println("Student id:" + Studentid +"     "+"Student name: " + Studentname);
+//            
+//            
+//            
+//		}
+//		System.out.println("\n");
 		
 		//test add task, delete task
 		//db.addTask(2, "homework", "HW3", 100, 30);
 		//db.deleteTask(1, "HW1");
 		
 		System.out.println("Show One Course's All Task");
-		res = db.showTask(1);
+//		res = db.showTask(1);
 		while(res.next()) {
             String CourseID = res.getString("CourseID");
             String Name = res.getString("Name");
@@ -121,13 +114,12 @@ public class databasetest {
 //		db.deleteStudent1("U20", 1);
 		
 		
-		//test StudentExit function:
-		if(db.studentExist("U19")) {
-			System.out.println("exit");
-		}
-		else {
-			System.out.println("not exit");
-		}
-		
+//		//test StudentExit function:
+//		if(db.studentExist("U19")) {
+//			System.out.println("exit");
+//		}
+//		else {
+//			System.out.println("not exit");
+//		}
 	}	
 }
