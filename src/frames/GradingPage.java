@@ -1,6 +1,7 @@
 package frames;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
@@ -10,7 +11,7 @@ import javax.swing.table.*;
 import classSrc.*;
 
 
-public class GradingPage extends JPanel implements ActionListener, SettingChangeListener, TableModelListener
+public class GradingPage extends JPanel implements ActionListener, SettingChangeListener
 {	
 	JButton view = new JButton("     View Student     ");
 	JButton save = new JButton("      Save Grade      ");
@@ -34,7 +35,7 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     	add("Student Name");
     	add("Bonus");
     }};
-
+    TableRowSorter sorter;
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
@@ -64,11 +65,11 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		
 		//organize inputPanel
 		JPanel textPanel = new JPanel();
-		textPanel.add(name);
-		textPanel.add(nameText);
-		textPanel.add(new JLabel("    "));
 		textPanel.add(id);
 		textPanel.add(idText);
+		textPanel.add(new JLabel("    "));
+		textPanel.add(name);
+		textPanel.add(nameText);
 		textPanel.add(new JLabel("    "));
 		textPanel.add(search);
 		inputPanel.add(textPanel);
@@ -114,9 +115,10 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		        return true;
 		    }
 		};
-		myModel.addTableModelListener(this);
 		jTable = new JTable(myModel);
 		jTable.putClientProperty("terminateEditOnFocusLost", true);
+		sorter = new TableRowSorter(myModel);
+		jTable.setRowSorter(sorter);  
     	jScrollPane = new JScrollPane(jTable);
     	jScrollPane.setPreferredSize(new Dimension(700,630));
     	listPanel.add(jScrollPane);
@@ -140,41 +142,34 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 			JOptionPane.showMessageDialog(getParent(), "Grades have been saved.");
 		}
 		else if(e.getSource()==search){
-			/*
-			if(nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
-            	JOptionPane.showMessageDialog(getParent(), "Please fill in the blank!");
-            	return;
-			}else if(nameText.getText().isEmpty()&&!idText.getText().isEmpty()) {
-				for(EnrolledStudent s : course.getEnrollStudent()) {
-					if(s.getID().equals(idText.getText().toString())) {
-						this.student = s;
-						break;
-					}
-				}
-			}else if(!nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
-				for(EnrolledStudent s : course.getEnrollStudent()) {
-					if(s.getName().equals(nameText.getText().toString())) {
-						this.student = s;
-						break;
-					}
-				}
+			String name = nameText.getText();
+			String id = idText.getText();
+			if(name.length() == 0 && id.length() == 0) {
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(null);  
+			}else if(name.length() != 0 && id.length() == 0) {
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(name, 1)); 
+			}else if(name.length() == 0 && id.length() != 0) {
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(id, 0)); 
 			}else {
-				for(EnrolledStudent s : course.getEnrollStudent()) {
-					if(s.getName().equals(nameText.getText().toString())&&s.getID().equals(idText.getText().toString())) {
-						this.student = s;
-						break;
-					}
-				}
+				ArrayList<RowFilter<Object,Object>> rfs = 
+			            new ArrayList<RowFilter<Object,Object>>();
+				rfs.add(RowFilter.regexFilter(name, 1));
+				rfs.add(RowFilter.regexFilter(id, 0));
+				RowFilter<DefaultTableModel, Object> rf = RowFilter.andFilter(rfs);
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(id, 0)); 
 			}
-			refreshStudentStatsList(this.student); */
         }
 	}
 
 	public void saveGrade() {
+		nameText.setText(null);
+		idText.setText(null);
+		((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(null); 
 		int column = jTable.getColumnCount();
 		int row = jTable.getRowCount();
 		for(int i = 0; i < row; i++) {
 			for(int j = 2; j < column; j++) {
+				System.out.println(this.course.getEnrollStudent().get(i).getName()+" ");
 				if(j==2) {
 					this.course.getEnrollStudent().get(i).setBonus(Double.valueOf(jTable.getValueAt(i, j).toString()));
 				}else {
@@ -189,27 +184,4 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 	{
 		refreshGradeList();
 	}
-
-	@Override
-	public void tableChanged(TableModelEvent e)
-	{
-		/*
-		if (e.getType() == TableModelEvent.UPDATE) {
-            int row = e.getFirstRow();
-            int column = e.getColumn();
-            String colName = jTable.getColumnName(column);
-            String content = jTable.getValueAt(row, column).toString();
-            if(colName.equals("Bonus")) {
-            	this.course.getEnrollStudent().get(row).setBonus(Double.valueOf(content));
-            }else {
-            	this.course.getEnrollStudent().get(row).getGrades().get(column-3).setCredit(Double.valueOf(content));
-            }
-        }*/
-	}
 }
-//DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());
-//singleclick.setClickCountToStart(1);
-//set the editor as default on every column
-//for (int i = 0; i < jTable.getColumnCount(); i++) {
-	//jTable.setDefaultEditor(jTable.getColumnClass(i), singleclick);
-//}

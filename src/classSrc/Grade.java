@@ -46,11 +46,11 @@ public class Grade {
 	
 	public boolean equals(Object obj) {
         if(this == obj){
-            return true;//地址相等
+            return true;
         }
 
         if(obj == null){
-            return false;//非空性：对于任意非空引用x，x.equals(null)应该返回false。
+            return false;
         }
 
         if(obj instanceof Assignment){

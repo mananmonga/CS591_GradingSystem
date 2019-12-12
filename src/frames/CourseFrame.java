@@ -125,6 +125,7 @@ public class CourseFrame extends JFrame implements ActionListener
 			cardLayout.show(cardpanel,"studentStatsPage");
         }
 		else if (e.getSource()==courseInfo){
+			this.courseStatsPage.refreshCourseStatsList();
 			cardLayout.show(cardpanel,"courseStatsPage");
         }
 	}
