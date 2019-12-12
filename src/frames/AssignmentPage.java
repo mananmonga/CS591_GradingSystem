@@ -2,6 +2,7 @@ package frames;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -169,6 +170,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 			if(ValidateAssignmentWeights()) {
 				course.setAssignments(assignments);
 				notifyALLListener();
+				JOptionPane.showMessageDialog(getParent(), "Assignment infomation has been confirmed.");
 			}
 			else {
 				JOptionPane.showMessageDialog(getParent(), "Please re-adjust the of weight of assignments.");
@@ -179,6 +181,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 				GradingSystem.getInstance().getAssignmentTemplate().clear();
 				for(Assignment a : assignments) 
 					GradingSystem.getInstance().getAssignmentTemplate().add(new Assignment(a));
+				JOptionPane.showMessageDialog(getParent(), "Assignment template has been saved.");
 			}
 			else {
 				JOptionPane.showMessageDialog(getParent(), "Please re-adjust the of weight of assignments.");
@@ -192,17 +195,13 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		}
 	}
 	
-	public void test() {
-		for(Assignment a : assignments) 
-			System.out.println(a.getID()+" "+a.getName()+" "+a.getType()+" "+a.getDescription()+" "+
-					a.getFullCredit()+" "+a.getWeight());
-	}
-	
 	//checks that unconfirmed assignment weights add to 1
-	private boolean ValidateAssignmentWeights() {
+	private boolean ValidateAssignmentWeights() {	
 		Double totalWeight = 0.0;
 		for(Assignment a : assignments) {
 			totalWeight += a.getWeight();
+			BigDecimal bg = new BigDecimal(totalWeight);
+			totalWeight = bg.setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}
 		return totalWeight == 1.0;
 	}

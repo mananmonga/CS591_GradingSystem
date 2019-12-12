@@ -4,12 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 
 import classSrc.*;
 
 
-public class GradingPage extends JPanel implements ActionListener, SettingChangeListener
+public class GradingPage extends JPanel implements ActionListener, SettingChangeListener, TableModelListener
 {	
 	JButton view = new JButton("     View Student     ");
 	JButton save = new JButton("      Save Grade      ");
@@ -100,12 +101,8 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
-			
-			ArrayList<Grade> orderedGrades = course.GetStudentGradesInAssignmentOrder(s);
-			int i = 0;
-			
-			while(list.size()<columnNames.size()) {
-				list.add(orderedGrades.get(i).getCredit());
+			for(Grade g : s.getGrades()) {
+				list.add(g.getCredit());
 			}
 			data.add(list);
     	}
@@ -117,6 +114,7 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		        return true;
 		    }
 		};
+		myModel.addTableModelListener(this);
 		jTable = new JTable(myModel);
 		jTable.putClientProperty("terminateEditOnFocusLost", true);
     	jScrollPane = new JScrollPane(jTable);
@@ -130,13 +128,83 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		listPanel.updateUI();
 	}
 	public void actionPerformed(ActionEvent e) {
-		
+		if(e.getSource()==view) {
+			if (jTable.getSelectedRow() == -1){
+                JOptionPane.showMessageDialog(getParent(), "Please select the student you want to review.");
+                return;
+            }	
+			rootframe.viewStudentStatsPage(course.getEnrollStudent().get(jTable.getSelectedRow()));
+		}
+		else if(e.getSource()==save) {
+			saveGrade();
+			JOptionPane.showMessageDialog(getParent(), "Grades have been saved.");
+		}
+		else if(e.getSource()==search){
+			/*
+			if(nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
+            	JOptionPane.showMessageDialog(getParent(), "Please fill in the blank!");
+            	return;
+			}else if(nameText.getText().isEmpty()&&!idText.getText().isEmpty()) {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getID().equals(idText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}else if(!nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getName().equals(nameText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}else {
+				for(EnrolledStudent s : course.getEnrollStudent()) {
+					if(s.getName().equals(nameText.getText().toString())&&s.getID().equals(idText.getText().toString())) {
+						this.student = s;
+						break;
+					}
+				}
+			}
+			refreshStudentStatsList(this.student); */
+        }
 	}
 
+	public void saveGrade() {
+		int column = jTable.getColumnCount();
+		int row = jTable.getRowCount();
+		for(int i = 0; i < row; i++) {
+			for(int j = 2; j < column; j++) {
+				if(j==2) {
+					this.course.getEnrollStudent().get(i).setBonus(Double.valueOf(jTable.getValueAt(i, j).toString()));
+				}else {
+					this.course.getEnrollStudent().get(i).getGrades().get(j-3).setCredit(Double.valueOf(jTable.getValueAt(i, j).toString()));
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void updatePage()
 	{
 		refreshGradeList();
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e)
+	{
+		/*
+		if (e.getType() == TableModelEvent.UPDATE) {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+            String colName = jTable.getColumnName(column);
+            String content = jTable.getValueAt(row, column).toString();
+            if(colName.equals("Bonus")) {
+            	this.course.getEnrollStudent().get(row).setBonus(Double.valueOf(content));
+            }else {
+            	this.course.getEnrollStudent().get(row).getGrades().get(column-3).setCredit(Double.valueOf(content));
+            }
+        }*/
 	}
 }
 //DefaultCellEditor singleclick = new DefaultCellEditor(new JTextField());

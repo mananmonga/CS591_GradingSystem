@@ -5,8 +5,7 @@ import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
-import classSrc.Course;
-import classSrc.EnrolledStudent;
+import classSrc.*;
 
 public class CourseStatsPage extends JPanel 
 {	

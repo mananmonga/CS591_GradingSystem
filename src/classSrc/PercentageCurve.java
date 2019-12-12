@@ -2,11 +2,11 @@ package classSrc;
 
 public class PercentageCurve extends Curve{
 
-	PercentageCurve(Double amount) {
+	public PercentageCurve(Double amount) {
 		super(amount);
 	}
 	
-	PercentageCurve(){ //no amount specified
+	public PercentageCurve(){ //no amount specified
 		super(0.0);
 	}
 /*

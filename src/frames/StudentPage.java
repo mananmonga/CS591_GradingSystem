@@ -115,6 +115,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 		if(e.getSource()==confirm) {
 			course.setEnrollStudent(students);
 			notifyALLListener();
+			JOptionPane.showMessageDialog(getParent(), "Student infomation has been confirmed.");
 		}
 		if(e.getSource()==add) {
 			if(sNameText.getText().isEmpty()) {

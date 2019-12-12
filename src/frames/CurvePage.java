@@ -59,7 +59,7 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 			list.add(a.getName());
 			if(a.getCurve() == null) {
 				list.add(curveType.getItemAt(0));
-				list.add("");
+				list.add("0.0");
 			}else if(a.getCurve() instanceof FlatCurve){
 				list.add(curveType.getItemAt(0));
 				list.add(a.getCurve().getAmount());
@@ -73,7 +73,7 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 		list.add("Course Curve");
 		if(course.getCurve() == null) {
 			list.add(curveType.getItemAt(0));
-			list.add("");
+			list.add("0.0");
 		}else if(course.getCurve() instanceof FlatCurve){
 			list.add(curveType.getItemAt(0));
 			list.add(course.getCurve().getAmount());
@@ -95,8 +95,30 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 		settingTable();
 		listPanel.updateUI();
 	}
+	
 	public void actionPerformed(ActionEvent e) {
-		
+		if (e.getSource()==confirm) {
+			saveCurve();
+			JOptionPane.showMessageDialog(getParent(), "Curve infomation has been confirmed.");
+		}
+	}
+	
+	public void saveCurve() {
+		int column = jTable.getColumnCount();
+		int row = jTable.getRowCount();
+		for(int i = 0; i < row; i++) {
+			Curve c = null;
+			if(jTable.getValueAt(i, 1).toString().equals("Percentage")) {
+				c = new PercentageCurve(Double.valueOf(jTable.getValueAt(i, 2).toString()));
+			}else if(jTable.getValueAt(i, 1).toString().equals("Flat")) {
+				c = new FlatCurve(Double.valueOf(jTable.getValueAt(i, 2).toString()));
+			}
+			if(i==row-1) {
+				this.course.setCurve(c);
+			}else {
+				this.course.getAssignments().get(i).setCurve(c);
+			}
+		}
 	}
 
 	@Override

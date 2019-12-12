@@ -2,18 +2,19 @@ package classSrc;
 
 public class Grade {
 	
-	public String ID;
-	
+	private String ID;
 	private Double credit;
 	private Assignment assignment;
 	private String comments = "";
 	
 	public Grade(Assignment a){  //cannot have a completely empty constructor for Grade instances; every grade refers to an assignment
+		this.ID = UUIDGenerator.getUUID();
 		this.credit = 0.0;
 		this.assignment = a;
 	}
 	
 	public Grade(Assignment a, Double credit_, String comments_){
+		this.ID = UUIDGenerator.getUUID();
 		this.assignment = a;
 		this.credit = credit_;
 		this.comments = comments_;
@@ -38,6 +39,28 @@ public class Grade {
 	public Assignment getAssignment() {
 		return this.assignment;
 	}
+	
+	public String getID() {
+		return this.ID;
+	}
+	
+	public boolean equals(Object obj) {
+        if(this == obj){
+            return true;//地址相等
+        }
+
+        if(obj == null){
+            return false;//非空性：对于任意非空引用x，x.equals(null)应该返回false。
+        }
+
+        if(obj instanceof Assignment){
+        	Assignment other = (Assignment) obj;
+            return this.getAssignment().getID().equals(other.getID());
+        }
+
+        return false;
+    }
+	
 	/*
 	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
 	public Double CalculatePercentageScore(boolean curved) {

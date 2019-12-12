@@ -1,5 +1,7 @@
 package classSrc;
 
+import java.math.BigDecimal;
+
 public class Assignment {
 	private String ID;
 	private GradingType gradingType;
@@ -15,7 +17,8 @@ public class Assignment {
 		this.name = name_;
 		this.description = description_;
 		this.fullCredit = fullCredit_;
-		this.weight = weight_;
+		BigDecimal bg = new BigDecimal(weight_);
+		this.weight = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public Assignment(Assignment ass){

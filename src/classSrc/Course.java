@@ -7,28 +7,20 @@ public class Course {
     private String UID;
     private String Code;
     private String description = "";
-    private Date createDate;
+    private String createDate;
     private Curve curve = null;
     private ArrayList<EnrolledStudent> enrolledStudents = new ArrayList<EnrolledStudent>();
     private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
-    
-    public Course() {
-    	this.UID = UUIDGenerator.getUUID();
-    	this.Code = "CS12345";
-    	this.name = "Empty Course";
-    	this.createDate = new Date();
-    	
-    }
 
     public Course(String name, String ID) {
         this.name = name;
         this.UID = UUIDGenerator.getUUID();
         this.Code = ID;
-        this.createDate = new Date();
+        this.createDate = new Date().toString();
     }
     
     public String getCreateDate() {
-		return createDate.toString();
+		return createDate;
 	}
     
     public String getName() {
@@ -72,7 +64,6 @@ public class Course {
     }
     
     public ArrayList<Assignment> getAssignments(){
-    	
     	return this.assignments;
     }
     
@@ -80,66 +71,62 @@ public class Course {
     public void setAssignments(ArrayList<Assignment> ass){
     	this.assignments = ass;
     	//TODO: at this point, overwrite all of the assignment tuples in the Assignment table in the database with whatever is in this.assignments
-   	 
-    	
     	//after a new assignment configuration has been added, we need to make sure that all of the students' grades match up with any previous assignments, that grades for deleted assignments are deleted, and that grades for new assignments are initialized as default to 0
-    	UpdateGradesWithAssignments();
-    	
+    	SyncGradesWhenAssignmentUpdate();	
     }
     
     
-    private void UpdateGradesWithAssignments() {
-    	
-    	
-    	
-    	for(int i = 0; i < enrolledStudents.size(); i += 1) {
-    		ArrayList<Grade> updatedGrades = enrolledStudents.get(i).getGrades();
-    		
-    		//first check for missing assignments:
-    		for(int j = 0; j < updatedGrades.size(); j += 1) {
-    			
-    			if(!doesGradeAssignmentExist(updatedGrades.get(j))){
-    				updatedGrades.remove(j);
-    				j -= 1; //make sure not to skip over the next grade after removing this one
+    private void SyncGradesWhenAssignmentUpdate() {
+    	for(int i = 0; i < this.assignments.size(); i++) {
+    		Assignment a = this.assignments.get(i);
+    		int index = -2;
+    		for(EnrolledStudent s : this.enrolledStudents) {
+    			if(index == -2) {
+    				index = doesGradeAssignmentExist(a,s);
+    				if(index == -1) {
+        				s.getGrades().add(i, new Grade(a));
+        			}else{
+        				Collections.swap(s.getGrades(),index,i);
+        			}
+    			}else if(index == -1) {
+    				s.getGrades().add(i, new Grade(a));
+    			}else{
+    				Collections.swap(s.getGrades(),index,i);
     			}
-    			
-    		}
-    		
-    		//then check for missing grades:
-    		for(int j = 0; j < this.assignments.size(); j += 1) {	
-    			if(!doesAssignmentGradeExist(this.assignments.get(j), updatedGrades)){
-    				updatedGrades.add(new Grade(this.assignments.get(j))); //add new empty grade for this assignment
-    			}
-    		}
-    		
-    		enrolledStudents.get(i).setGrades(updatedGrades);
-    		
-    		
+    		}   		
     	}
+    	//delete redundant score 
+    	for(EnrolledStudent s : this.enrolledStudents) {
+			s.getGrades().retainAll(this.assignments);
+		}
     }
     
-    //helper function for UpdateGradesWithAssignments
+    //helper function for SyncGradesWhenAssignmentUpdate
     //Helps ensure that all of the enrolledStudents.grades are consistent with the updated assignment configuration
     //determines whether a student's grade is now obsolete because it references an assignment that has been deleted
-    private boolean doesGradeAssignmentExist(Grade g) {
-    	boolean gradeAssignmentFound = false;
-		for(int i = 0; i < this.assignments.size() && !gradeAssignmentFound; i += 1) {
-			gradeAssignmentFound = this.assignments.get(i).getID().equals(g.getAssignment().getID());
-		}
+    private int doesGradeAssignmentExist(Assignment a, EnrolledStudent s) {
+    	int gradeAssignmentFound = -1, i = 0;
+    	for(Grade g : s.getGrades()) {
+    		if(a.getID().equals(g.getAssignment().getID())){
+    			gradeAssignmentFound = i;
+    			break;
+    		}
+    		i++;
+    	}
 		return gradeAssignmentFound;
     }
     
-    //helper function for setAssignments
-    //Helps ensure that all of the enrolledStudents.grades are consistent with the updated assignment configuration
-    //determines whether an assignment has a corresponding grade in a student's grade list 
-    private boolean doesAssignmentGradeExist(Assignment a, ArrayList<Grade> grades) {
-    	boolean assignmentGradeFound = false;
-		for(int i = 0; i < grades.size() && !assignmentGradeFound; i += 1) {
-			assignmentGradeFound = grades.get(i).getAssignment().getID().equals(a.getID());
-		}
-		return assignmentGradeFound;
+    private void SyncGradesWhenStudentUpdate() {
+    	int length = this.assignments.size();
+    	for(EnrolledStudent s : this.enrolledStudents) {
+    		if(s.getGrades().size()<length) {
+    			for(Assignment a: this.assignments)
+    				s.getGrades().add(new Grade(a));
+    		}
+    	}
     }
-    
+
+   /*
     //used for populating the grading table correctly
     public ArrayList<Grade> GetStudentGradesInAssignmentOrder(EnrolledStudent es){
     	ArrayList<Grade> orderedGrades = new ArrayList<Grade>();
@@ -156,24 +143,15 @@ public class Course {
     	}
     	return orderedGrades;
     }
-    
-    
+    */
     
     public ArrayList<EnrolledStudent> getEnrollStudent(){
-    	
     	return this.enrolledStudents;
     }
     
     public void setEnrollStudent(ArrayList<EnrolledStudent> stu){
     	this.enrolledStudents = stu;
-    	
-    	UpdateGradesWithAssignments(); //need to give all new students empty grades for assignments
-    	
-    	//	TODO: need to overwrite all enrolledStudent tuples in the EnrolledStudent table of the database (regardless of whether there are new or old students in the list that is being set
-    	
-    	// 	TODO: need to overwrite all grade tuples in the Grade table of the database for all enrolledStudents.grades
-    	
-    	
+    	SyncGradesWhenStudentUpdate(); //need to give all new students empty grades for assignments
     }
     
     

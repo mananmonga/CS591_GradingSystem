@@ -3,21 +3,27 @@ package classSrc;
 import java.util.ArrayList;
 
 public class EnrolledStudent extends Student {
-    private ArrayList<Grade> grades = new ArrayList<Grade>();;
+    private ArrayList<Grade> grades = new ArrayList<Grade>();
     private Double bonusPoints = 0.0;
     private String comments ="";
     
-    public EnrolledStudent(String name, ArrayList<Grade> grades_, Double bonusPoints_, String comments_) {
-    	super(name, UUIDGenerator.getUUID());
+    public EnrolledStudent(String name, String ID, ArrayList<Grade> grades_, Double bonusPoints_, String comments_) {
+    	super(name, ID);
     	grades = grades_;
     	bonusPoints = bonusPoints_;
     	comments = comments_;
     }
     
-    public EnrolledStudent() {
-    	super("No Name", UUIDGenerator.getUUID());
+    public EnrolledStudent(String name, String ID) {
+    	super(name, ID);
     }
-
+    
+    public EnrolledStudent(EnrolledStudent s) {
+        super(s.getName(),s.getID());
+        this.bonusPoints = s.getBonus();
+        this.grades = s.getGrades();
+    }
+    
     public ArrayList<Grade> getGrades() {
         return grades;
     }
@@ -49,33 +55,5 @@ public class EnrolledStudent extends Student {
     
     public String getID() {
     	return this.ID;
-    }
-
-    public EnrolledStudent(String name, String ID) {
-        super(name, ID);
-    }
-    
-    public EnrolledStudent(EnrolledStudent s) {
-        super(s.getName(),s.getID());
-        this.bonusPoints = s.getBonus();
-        this.grades = s.getGrades();
-    }
-   
-    
-    //must implement equals method so that an enrolled student can be removed from Course.EnrolledStudents
-    @Override
-    public boolean equals(Object other) {
-    	  
-        if (other == this) { 
-            return true; 
-        } 
-  
-        if (!(other instanceof EnrolledStudent)) { 
-            return false; 
-        } 
-          
-        EnrolledStudent otherStudent = (EnrolledStudent)other; 
-          
-        return this.ID == otherStudent.ID;
     }
 }

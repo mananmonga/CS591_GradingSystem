@@ -26,6 +26,7 @@ public class StudentStatsPage extends JPanel implements ActionListener
     String[] columnNames = {"Assignment", "Credit", "Comments"};
     HashSet<String> set = new HashSet<String>() {{
     	add("Assignment");
+    	add("Credit");
     }};
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
@@ -77,18 +78,18 @@ public class StudentStatsPage extends JPanel implements ActionListener
 		listPanel.add(showPanel,BorderLayout.NORTH);
 		data.clear();
 		if(student!=null) {
-			for(Grade g : student.getGrades()) {
-    			Vector<Object> list = new Vector<>();
-    	    	list.add(g.getAssignment().getName());
-    			list.add(g.getCredit());
- 				list.add(g.getComment());
- 				data.add(list);
-    		}
-    		Vector<Object> list = new Vector<>();
+			Vector<Object> list = new Vector<>();
 	    	list.add("Bonus Point");
 			list.add(student.getBonus());
 			list.add(student.getComment());
 			data.add(list);
+			for(Grade g : student.getGrades()) {
+    			Vector<Object> tlist = new Vector<>();
+    			tlist.add(g.getAssignment().getName());
+    			tlist.add(g.getCredit());
+    			tlist.add(g.getComment());
+ 				data.add(tlist);
+    		}
 		}
 		jTable = new JTable(new CustomizedTable(columnNames,data,set,null));
     	jScrollPane = new JScrollPane(jTable);
@@ -131,5 +132,26 @@ public class StudentStatsPage extends JPanel implements ActionListener
 			}
 			refreshStudentStatsList(this.student);
         }
+		if (e.getSource()==save) {
+			if(this.student == null) {
+				return;
+			}
+			saveComment();
+			JOptionPane.showMessageDialog(getParent(), "Student infomation has been saved.");
+		}
+	}
+	
+	public void saveComment() {
+		int column = jTable.getColumnCount();
+		int row = jTable.getRowCount();
+		for(int i = 0; i < row; i++) {
+			if(i==0) {
+				this.student.setComment(jTable.getValueAt(i, 2).toString());
+			}else {
+				this.student.getGrades().get(i-1).setComment(jTable.getValueAt(i, 2).toString());
+			}
+		}
 	}
 }
+
+

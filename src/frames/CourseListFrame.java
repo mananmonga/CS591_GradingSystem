@@ -34,7 +34,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
 	{ 	
 		//TODO: PASS LIST OF COURSES FROM DATABASE
 		this.courses = courses_;
-		courses.add(new Course());
+		courses.add(new Course("OOD","CS 591"));
 		Course aa = new Course("Data science","CS 506");
 		aa.getAssignments().add(new Assignment("Absolute Grading", "HW2", "", Double.valueOf(100.00), Double.valueOf(0.5)));
 		aa.getAssignments().add(new Assignment("Deduction Grading", "Quiz2", "", Double.valueOf(150.00), Double.valueOf(0.5)));
