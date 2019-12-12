@@ -21,7 +21,7 @@ public class StudentStatsPage extends JPanel implements ActionListener
 	JTextField idText = new JTextField("",10);
     JPanel listPanel = new JPanel(new BorderLayout());
     JPanel inputPanel = new JPanel(new GridLayout(3,1,10,5));
-    EnrolledStudent student = null;
+    EnrolledStudent student;
     JScrollPane jScrollPane;
     String[] columnNames = {"Assignment", "Credit", "Comments"};
     HashSet<String> set = new HashSet<String>() {{
@@ -30,9 +30,10 @@ public class StudentStatsPage extends JPanel implements ActionListener
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
-	
-	public StudentStatsPage(Course course_)
+    
+	public StudentStatsPage(Course course_, EnrolledStudent student_)
 	{ 	
+		this.student = student_;
 		this.course = course_;
 		//organize panel
 		this.setLayout(new BorderLayout());
@@ -66,8 +67,10 @@ public class StudentStatsPage extends JPanel implements ActionListener
 	
 	private void settingTable() {
 		JPanel showPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		name = new JLabel("Name: ");
-		id = new JLabel("ID: ");
+		String studentName = this.student == null ? "":student.getName();
+		String studentId = this.student == null ? "":student.getID();
+		name = new JLabel("Name: "+studentName);
+		id = new JLabel("ID: "+studentId);
 		showPanel.add(name);
 		showPanel.add(new JLabel("    "));
 		showPanel.add(id);
@@ -93,7 +96,8 @@ public class StudentStatsPage extends JPanel implements ActionListener
     	listPanel.add(jScrollPane,BorderLayout.CENTER);
 	}
 	
-	public void refreshStudentStatsList() {
+	public void refreshStudentStatsList(EnrolledStudent student_) {
+		this.student = student_;
 		listPanel.removeAll();
 		settingTable();
 		listPanel.updateUI();
@@ -125,7 +129,7 @@ public class StudentStatsPage extends JPanel implements ActionListener
 					}
 				}
 			}
-			refreshStudentStatsList();
+			refreshStudentStatsList(this.student);
         }
 	}
 }

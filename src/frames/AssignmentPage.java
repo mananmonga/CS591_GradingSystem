@@ -65,6 +65,8 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 			assignments.add(new Assignment(a));
 		settingTable();
 		mainPanel.add(listPanel,BorderLayout.CENTER);
+		mainPanel.setPreferredSize(new Dimension(700,630));
+		listPanel.setPreferredSize(new Dimension(700,630));
 		
 		//organize inputPanel
 		JPanel textPanel = new JPanel(new GridLayout(1,4,10,5));
@@ -125,6 +127,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		jTable = new JTable(new CustomizedTable(columnNames,data,set,this));
 		jTable.putClientProperty("terminateEditOnFocusLost", true);
     	jScrollPane = new JScrollPane(jTable);
+    	jScrollPane.setPreferredSize(new Dimension(700,630));
     	listPanel.add(jScrollPane);
 	}
 	

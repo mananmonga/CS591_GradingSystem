@@ -37,10 +37,12 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
+    CourseFrame rootframe;
     
-	public GradingPage(Course course_)
+	public GradingPage(Course course_, CourseFrame rootframe_)
 	{ 	
 		this.course = course_;
+		this.rootframe = rootframe_;
 		//organize panel
 		this.setLayout(new BorderLayout());
 		JLabel label = new JLabel("Grading Page", SwingConstants.CENTER);
@@ -98,8 +100,12 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
+			
+			ArrayList<Grade> orderedGrades = course.GetStudentGradesInAssignmentOrder(s);
+			int i = 0;
+			
 			while(list.size()<columnNames.size()) {
-				list.add("");
+				list.add(orderedGrades.get(i).getCredit());
 			}
 			data.add(list);
     	}

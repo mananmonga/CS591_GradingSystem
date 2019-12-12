@@ -12,9 +12,8 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 {	
 
 	JButton confirm = new JButton("                         Confirm                         ");
-	JButton view = new JButton("            View Course Statistics           ");
     JPanel listPanel = new JPanel();
-    JPanel inputPanel = new JPanel(new GridLayout(4,1,10,5));
+    JPanel inputPanel = new JPanel(new GridLayout(2,1,10,5));
 	
     JScrollPane jScrollPane;
     String[] columnNames = {"Assignment Name", "Curve type", "Value"};
@@ -45,16 +44,11 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 		//organize inputPanel
 		JPanel tPanel1 = new JPanel();
 		tPanel1.add(confirm);
-		JPanel tPanel2 = new JPanel();
-		tPanel2.add(view);
 		inputPanel.add(tPanel1);
-		inputPanel.add(new JLabel("    "));
-		inputPanel.add(tPanel2);
 		inputPanel.add(new JLabel("    "));
 		
 		//arrange listeners
 		confirm.addActionListener(this);
-		view.addActionListener(this);
 		this.setVisible(true);
 	}
 	

@@ -11,7 +11,7 @@ public class CourseFrame extends JFrame implements ActionListener
 	StudentPage studentPage;
 	AssignmentPage assignmentPage;
 	StudentStatsPage studentStatsPage;
-	CourseStatsPage courseStatsPage = new CourseStatsPage();
+	CourseStatsPage courseStatsPage;
 	GradingPage gradingPage;
 	CurvePage curvePage;
 	JMenuItem grading, assignment, student, curve, studentInfo, courseInfo;
@@ -26,11 +26,12 @@ public class CourseFrame extends JFrame implements ActionListener
 	public CourseFrame(Course course_) {
 		this.course = course_;
 		this.frameTitle = course.getCode() + " " + course_.getName();
-		this.gradingPage = new GradingPage(course);
+		this.gradingPage = new GradingPage(course, this);
 		this.assignmentPage = new AssignmentPage(course);
 		this.studentPage = new StudentPage(course);
-		this.studentStatsPage = new StudentStatsPage(course);
+		this.studentStatsPage = new StudentStatsPage(course,null);
 		this.curvePage = new CurvePage(course);
+		this.courseStatsPage = new CourseStatsPage(course);
 		this.assignmentPage.addListener("CurvePage",this.curvePage);
 		this.assignmentPage.addListener("GradingPage",this.gradingPage);
 		this.studentPage.addListener("GradingPage",this.gradingPage);
@@ -101,6 +102,11 @@ public class CourseFrame extends JFrame implements ActionListener
 		introPage.add(label, BorderLayout.CENTER);
 	}
 	
+	public void viewStudentStatsPage(EnrolledStudent student) {
+		this.studentStatsPage.refreshStudentStatsList(student);
+		cardLayout.show(cardpanel,"studentStatsPage");
+	};
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==grading){
 			cardLayout.show(cardpanel,"gradingPage");

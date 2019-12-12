@@ -16,5 +16,5 @@ public abstract class Curve {
 		this.amount = amount;
 	}
 	
-	abstract public Double calculateCurvedPart(Double plainScore);
+	//abstract public Double calculateCurvedPart(Double plainScore);
 }

@@ -18,7 +18,6 @@ public class Assignment {
 		this.weight = weight_;
 	}
 	
-	
 	public Assignment(Assignment ass){
 		this.ID = ass.getID();
 		this.setType(ass.getType());
