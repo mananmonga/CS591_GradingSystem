@@ -6,6 +6,17 @@ public class EnrolledStudent extends Student {
     private ArrayList<Grade> grades = new ArrayList<Grade>();;
     private Double bonusPoints = 0.0;
     private String comments ="";
+    
+    public EnrolledStudent(String name, ArrayList<Grade> grades_, Double bonusPoints_, String comments_) {
+    	super(name, UUIDGenerator.getUUID());
+    	grades = grades_;
+    	bonusPoints = bonusPoints_;
+    	comments = comments_;
+    }
+    
+    public EnrolledStudent() {
+    	super("No Name", UUIDGenerator.getUUID());
+    }
 
     public ArrayList<Grade> getGrades() {
         return grades;
@@ -13,6 +24,7 @@ public class EnrolledStudent extends Student {
 
     public void setGrades(ArrayList<Grade> grades) {
         this.grades = grades;
+        //TODO: UPDATE ALL OF THIS STUDENTS' GRADES IN DATABASE (just overwrite any previous tuples if the primary key matches
     }
 
     public Double getBonus() {
@@ -48,11 +60,7 @@ public class EnrolledStudent extends Student {
         this.bonusPoints = s.getBonus();
         this.grades = s.getGrades();
     }
-    
-    public void AddGrade(Grade g) {
-    	grades.add(g);
-    	//TODO: ADD NEW GRADE TO DATABASE
-    }
+   
     
     //must implement equals method so that an enrolled student can be removed from Course.EnrolledStudents
     @Override

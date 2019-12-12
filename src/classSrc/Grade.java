@@ -1,6 +1,9 @@
 package classSrc;
 
 public class Grade {
+	
+	public String ID;
+	
 	private Double credit;
 	private Assignment assignment;
 	private String comments = "";
