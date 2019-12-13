@@ -1,5 +1,7 @@
 package frames;
 import classSrc.*;
+import database.database;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -28,6 +30,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
     Course course;
     ArrayList<EnrolledStudent> students;
     HashMap<String,SettingChangeListener> listeners = new HashMap<String,SettingChangeListener>();
+    database db = new database();
     
 	public StudentPage(Course course_)
 	{ 	
@@ -114,8 +117,9 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 		}
 		if(e.getSource()==confirm) {
 			course.setEnrollStudent(students);
+			System.out.println("size is " + students.size());
+			db.updateStudent(students, course);
 			notifyALLListener();
-			JOptionPane.showMessageDialog(getParent(), "Student infomation has been confirmed.");
 		}
 		if(e.getSource()==add) {
 			if(sNameText.getText().isEmpty()) {
