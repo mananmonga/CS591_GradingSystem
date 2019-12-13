@@ -8,10 +8,11 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import classSrc.*;
+import database.database;
 
 public class CourseListFrame extends JFrame implements ActionListener, TableModelListener
 {	
-	JLabel cId = new JLabel("Course ID:");
+	JLabel cId = new JLabel("Course Code:");
 	JLabel cName = new JLabel("Course Name:");
 	JButton add = new JButton("   Add   ");
 	JButton delete = new JButton(" Delete ");
@@ -22,23 +23,18 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
     JPanel inputPanel = new JPanel(new GridLayout(3,1,10,5));
     
     JScrollPane jScrollPane;
-    String[] columnNames = {"Course ID", "Course Name", "Description", "Create Date"};
+    String[] columnNames = {"Course Code", "Course Name", "Description", "Create Date"};
     HashSet<String> set = new HashSet<String>() {{
     	add("Create Date");
     }};
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     ArrayList<Course> courses;
-	
-	public CourseListFrame(ArrayList<Course> courses_)
+    database db;
+    
+	public CourseListFrame()
 	{ 	
-		//TODO: PASS LIST OF COURSES FROM DATABASE
-		this.courses = courses_;
-		courses.add(new Course("OOD","CS 591"));
-		Course aa = new Course("Data science","CS 506");
-		aa.getAssignments().add(new Assignment("Absolute Grading", "HW2", "", Double.valueOf(100.00), Double.valueOf(0.5)));
-		aa.getAssignments().add(new Assignment("Deduction Grading", "Quiz2", "", Double.valueOf(150.00), Double.valueOf(0.5)));
-		courses.add(aa);
+		this.courses = GradingSystem.getInstance().courses;
 
 		//organize frame
 		this.setTitle("Courses");
@@ -72,7 +68,10 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(150, 80, 600, 500); 
+		setBounds(150, 80, 600, 500);
+		
+		//database
+		db = new database();
 	}
 	
 	private void settingTable() {
@@ -110,6 +109,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
 				String name = cNameText.getText();
 				String id = cIdText.getText();
 				Course newCourse = new Course(name,id);
+				db.addCourse(newCourse);
 				courses.add(newCourse);
 				refreshCourseList();
 			}
@@ -119,6 +119,8 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
                 JOptionPane.showMessageDialog(getParent(), "Please select the course you want to delete.");
                 return;
             }
+			Course removecourse = courses.get(jTable.getSelectedRow());
+			db.deletCourse(removecourse);
 			courses.remove(jTable.getSelectedRow());
         	refreshCourseList();	
 		} 
@@ -141,7 +143,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
             String colName = jTable.getColumnName(column);
             Object content = jTable.getValueAt(row, column);
             switch(colName) {
-				case "Course ID":
+				case "Course Code":
 					courses.get(row).setCode(content.toString());
 					break;
 				case "Course Name":
@@ -151,6 +153,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
 					courses.get(row).setDescription(content.toString());
 					break;
             }
+            db.updateCourse(courses.get(row));
         }
 	}
 

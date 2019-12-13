@@ -19,6 +19,14 @@ public class Course {
         this.createDate = new Date().toString();
     }
     
+    public Course(String Name, String Code, String UID, String Description, String createDate) {
+    	this.name = Name;
+    	this.Code = Code;
+    	this.UID = UID;
+    	this.createDate = createDate;
+    	this.description = Description;
+    }
+    
     public String getCreateDate() {
 		return createDate;
 	}
@@ -67,14 +75,12 @@ public class Course {
     	return this.assignments;
     }
     
-    
     public void setAssignments(ArrayList<Assignment> ass){
     	this.assignments = ass;
     	//TODO: at this point, overwrite all of the assignment tuples in the Assignment table in the database with whatever is in this.assignments
     	//after a new assignment configuration has been added, we need to make sure that all of the students' grades match up with any previous assignments, that grades for deleted assignments are deleted, and that grades for new assignments are initialized as default to 0
     	SyncGradesWhenAssignmentUpdate();	
     }
-    
     
     private void SyncGradesWhenAssignmentUpdate() {
     	for(int i = 0; i < this.assignments.size(); i++) {
@@ -125,25 +131,6 @@ public class Course {
     		}
     	}
     }
-
-   /*
-    //used for populating the grading table correctly
-    public ArrayList<Grade> GetStudentGradesInAssignmentOrder(EnrolledStudent es){
-    	ArrayList<Grade> orderedGrades = new ArrayList<Grade>();
-    	while(orderedGrades.size() < es.getGrades().size()) {
-    		
-    		for(Assignment a : assignments) {
-    			for(Grade g: es.getGrades()) {
-    	    		if(g.getAssignment().getID().contentEquals(a.getID())) {
-    	    			orderedGrades.add(g);
-    	    		}
-        		}
-    		}
-    		
-    	}
-    	return orderedGrades;
-    }
-    */
     
     public ArrayList<EnrolledStudent> getEnrollStudent(){
     	return this.enrolledStudents;
@@ -153,8 +140,6 @@ public class Course {
     	this.enrolledStudents = stu;
     	SyncGradesWhenStudentUpdate(); //need to give all new students empty grades for assignments
     }
-    
-    
   
     /*
     //returns the overall grade for the specified student in this course. When not all assignments have been graded yet, this returns a proportional score based on what has already been graded

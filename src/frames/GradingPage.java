@@ -35,7 +35,6 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     	add("Student Name");
     	add("Bonus");
     }};
-    TableRowSorter sorter;
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
@@ -117,7 +116,12 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		};
 		jTable = new JTable(myModel);
 		jTable.putClientProperty("terminateEditOnFocusLost", true);
-		sorter = new TableRowSorter(myModel);
+		TableRowSorter sorter = new TableRowSorter(myModel){
+		    @Override public boolean isSortable(int column) {
+			      return false;
+			    }
+			  };
+		
 		jTable.setRowSorter(sorter);  
     	jScrollPane = new JScrollPane(jTable);
     	jScrollPane.setPreferredSize(new Dimension(700,630));

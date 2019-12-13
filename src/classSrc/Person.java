@@ -16,5 +16,9 @@ abstract public class Person {
     public void setID(String id) {
     	this.ID = id;
     }
+    
+    public String getID() {
+    	return this.ID;
+    }
 }
 

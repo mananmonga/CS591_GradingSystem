@@ -1,7 +1,6 @@
 package frames;
 import classSrc.*;
 import database.database;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -120,6 +119,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 			System.out.println("size is " + students.size());
 			db.updateStudent(students, course);
 			notifyALLListener();
+			JOptionPane.showMessageDialog(getParent(), "Student infomation has been confirmed.");
 		}
 		if(e.getSource()==add) {
 			if(sNameText.getText().isEmpty()) {

@@ -75,7 +75,7 @@ public class LoginFrame extends JFrame implements ActionListener//implements Act
         		//TODO: INSTANTIATE NEW TEACHER CLASS THAT HOLDS ALL THE COURSES, ASSIGNMENTS, ETC LISTED IN THE DATABASE
         		
         		
-        		new CourseListFrame(new ArrayList<Course>() {}); //TODO: PASS TEACHER.COURSES AS A PARAMETER INTO COURSELISTFRAME
+        		new CourseListFrame(); //TODO: PASS TEACHER.COURSES AS A PARAMETER INTO COURSELISTFRAME
                 this.dispose();
             }else {
             	JOptionPane.showMessageDialog(getParent(), "Either your Username or Password is wrong. Please enter again.");

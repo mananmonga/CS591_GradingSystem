@@ -67,7 +67,15 @@ public class CourseStatsPage extends JPanel
 			list.add("total");
 			data1.add(list);
     	}
-		jTable1 = new JTable(new DefaultTableModel(data1,columnNames1));
+		DefaultTableModel model = new DefaultTableModel(data1,columnNames1){
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
+		jTable1 = new JTable(model);
+		RowSorter<DefaultTableModel> sorter = new TableRowSorter<DefaultTableModel>(model);  
+		jTable1.setRowSorter(sorter); 
     	jScrollPane1 = new JScrollPane(jTable1);
     	listPanel1.add(jScrollPane1);
 	}
@@ -93,7 +101,12 @@ public class CourseStatsPage extends JPanel
 			list.add("total");
 			data2.add(list);
     	}
-		jTable2 = new JTable(new DefaultTableModel(data2,columnNames2));
+		jTable2 = new JTable(new DefaultTableModel(data2,columnNames2)){
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
     	jScrollPane2 = new JScrollPane(jTable2);
     	listPanel2.add(jScrollPane2);
 	}

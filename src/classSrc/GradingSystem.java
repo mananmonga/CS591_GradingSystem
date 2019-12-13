@@ -1,9 +1,12 @@
 package classSrc;
 
 import java.util.ArrayList;
+import database.database;
 
 public class GradingSystem
 {	
+	public ArrayList<Course> courses = new ArrayList<Course>();
+	private database db;
 	private ArrayList<Assignment> assignmentTemplate = new ArrayList<Assignment>() {{
 		add(new Assignment("Absolute Grading", "HW1", "",Double.valueOf(100.00), Double.valueOf(0.3)));
 		add(new Assignment("Deduction Grading", "Quiz1", "",Double.valueOf(100.00), Double.valueOf(0.7)));
@@ -19,6 +22,8 @@ public class GradingSystem
 	
 	private GradingSystem() {
 		//initBank();  //initialize bank with fixed data
+		db = new database();
+		courses = db.showCourse();
 	}
 	
 	public boolean LoginCheck(String Uid, String password) {

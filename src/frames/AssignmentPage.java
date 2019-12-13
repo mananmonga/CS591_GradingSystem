@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 import classSrc.*;
+import database.database;
 
 public class AssignmentPage extends JPanel implements ActionListener, TableModelListener
 {	
@@ -43,6 +44,8 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
     Course course;
     ArrayList<Assignment> assignments;
     HashMap<String,SettingChangeListener> listeners = new HashMap<String,SettingChangeListener>();
+    
+    private database db = new database();
     
 	public AssignmentPage(Course course_)
 	{ 	
@@ -169,6 +172,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		if(e.getSource() == confirm) { //teacher is trying to confirm a new assignment configuration for the course
 			if(ValidateAssignmentWeights()) {
 				course.setAssignments(assignments);
+				db.updateTask(assignments, course);
 				notifyALLListener();
 				JOptionPane.showMessageDialog(getParent(), "Assignment infomation has been confirmed.");
 			}
