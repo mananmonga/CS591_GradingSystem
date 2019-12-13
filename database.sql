@@ -123,7 +123,7 @@ CREATE TABLE `Student` (
 
 LOCK TABLES `Student` WRITE;
 /*!40000 ALTER TABLE `Student` DISABLE KEYS */;
-INSERT INTO `Student` VALUES ('U20','Tian'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan'),('U27','Tian1'),('U29','Zhilin1'),('U30','Dennis1');
+INSERT INTO `Student` VALUES ('aa','Tian'),('bb','Zhelin2'),('cc','cc'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan'),('U27','Tian1'),('U29','Zhilin1'),('U30','Dennis1'),('U31','Tian');
 /*!40000 ALTER TABLE `Student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,10 +139,8 @@ CREATE TABLE `StudentCourse` (
   `CourseID` varchar(45) NOT NULL,
   `section` int(11) DEFAULT NULL,
   PRIMARY KEY (`StudentID`,`CourseID`),
-  KEY `SectionID_1_idx` (`section`),
   KEY `CourseID_2_idx` (`CourseID`),
   CONSTRAINT `CourseID_2` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `SectionID_1` FOREIGN KEY (`section`) REFERENCES `Section` (`SectionID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `StudentID_4` FOREIGN KEY (`StudentID`) REFERENCES `Student` (`StudentID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -153,6 +151,7 @@ CREATE TABLE `StudentCourse` (
 
 LOCK TABLES `StudentCourse` WRITE;
 /*!40000 ALTER TABLE `StudentCourse` DISABLE KEYS */;
+INSERT INTO `StudentCourse` VALUES ('bb','4f74842cee744bc',1),('cc','4f74842cee744bc',1);
 /*!40000 ALTER TABLE `StudentCourse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,7 +182,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES ('4f74842cee744bc','Quiz1',100,0.7,'Deduction Grading','','53beeda49184417'),('4f74842cee744bc','HW1',100,0.3,'Absolute Grading','','612149d4e89e48e');
+INSERT INTO `task` VALUES ('4f74842cee744bc','HW1',100,0.3,'Absolute Grading','','62929f71b4fd4b1'),('4f74842cee744bc','Quiz1',100,0.7,'Deduction Grading','','e4555034a81843e');
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -196,4 +195,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-12 10:22:55
+-- Dump completed on 2019-12-13 15:52:04

@@ -130,7 +130,7 @@ public class database {
 			while ( res.next()) {
 				Course c = new Course(res.getString("CourseName"), res.getString("CourseCode"), res.getString("CourseID"), res.getString("Description"), res.getString("CreateDate"));
 				c.setAssignments(showTask(c));
-				//c.setEnrollStudent(showStudent(c));
+				c.setEnrollStudent(showStudent(c));
 				courses.add(c);
 			}
 		}
@@ -235,7 +235,8 @@ public class database {
 	//show all student in one course
 	public ArrayList<EnrolledStudent> showStudent(Course course) {
 		students = new ArrayList<EnrolledStudent>();
-		sql = "select * from gradingsystem.StudentCourse where CourseID = " + "'" + course.getUID() + "'";
+		sql = "select * from gradingsystem.StudentCourse, gradingsystem.Student where CourseID = " + "'" + course.getUID() 
+			+ "' and gradingsystem.Student.StudentID = gradingsystem.StudentCourse.StudentID ";
 		try {
 			res = stmt.executeQuery(sql);
 			while(res.next()) {
