@@ -13,10 +13,6 @@ public class FlatCurve extends Curve{
 	public String getCurveString() {
 		return "Flat";
 	}
-/*
-	public Double calculateCurvedPart(Double plainScore) {
-		return this.getAmount();
-	};*/
 
 	@Override
 	public Double ConvertRawToCurved(Double rawCredit) {

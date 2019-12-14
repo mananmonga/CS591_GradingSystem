@@ -182,9 +182,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		}
 		if(e.getSource() == save) { //teacher is trying to save this assignment template
 			if(ValidateAssignmentWeights()) {
-				GradingSystem.getInstance().getAssignmentTemplate().clear();
-				for(Assignment a : assignments) 
-					GradingSystem.getInstance().getAssignmentTemplate().add(new Assignment(a));
+				db.saveTemplate(assignments);
 				JOptionPane.showMessageDialog(getParent(), "Assignment template has been saved.");
 			}
 			else {
@@ -192,9 +190,8 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 			}
 		}	
 		if(e.getSource() == tLoad) { //teacher is trying to load a previous assignment structure template
-			assignments = new ArrayList<Assignment>();
-			for(Assignment a : GradingSystem.getInstance().getAssignmentTemplate()) 
-				assignments.add(new Assignment(a));
+			assignments = null;
+			assignments = db.loadTemplate();
 			refreshAssignmentList();
 		}
 	}

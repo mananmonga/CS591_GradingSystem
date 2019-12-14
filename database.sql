@@ -161,6 +161,34 @@ INSERT INTO `StudentCourse` VALUES ('cc','4f74842cee744bc',1,'hard-worker',10),(
 UNLOCK TABLES;
 
 --
+-- Table structure for table `TaskTemplate`
+--
+
+DROP TABLE IF EXISTS `TaskTemplate`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `TaskTemplate` (
+  `Name` varchar(45) NOT NULL,
+  `FullCredit` double DEFAULT NULL,
+  `Weight` double DEFAULT NULL,
+  `Curve` varchar(45) DEFAULT NULL,
+  `CurveValue` double DEFAULT NULL,
+  `Type` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TaskTemplate`
+--
+
+LOCK TABLES `TaskTemplate` WRITE;
+/*!40000 ALTER TABLE `TaskTemplate` DISABLE KEYS */;
+INSERT INTO `TaskTemplate` VALUES ('HW2',100,0.4,'Percentage',1,'Absolute Grading'),('Quiz1',90,0.6,'Flat',9,'Deduction Grading');
+/*!40000 ALTER TABLE `TaskTemplate` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `task`
 --
 
@@ -189,7 +217,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES ('4f74842cee744bc','HW1',100,0.3,'Absolute Grading','test1','62929f71b4fd4b1','Percentage',1),('4f74842cee744bc','Quiz1',90,0.7,'Deduction Grading','test2','e4555034a81843e','Flat',9),('f0a2d279056b4a8','Quiz1',100,0.4,'Deduction Grading','bb','549905146365490','Flat',12),('f0a2d279056b4a8','Quiz2',150,0.3,'Deduction Grading','cc','9327389d68a348e','Percentage',3),('f0a2d279056b4a8','HW1',100,0.3,'Absolute Grading','aa','b8badd6adb9f4d3','Percentage',11);
+INSERT INTO `task` VALUES ('4f74842cee744bc','HW1',100,0.4,'Absolute Grading','test1','62929f71b4fd4b1','Percentage',1),('4f74842cee744bc','Quiz1',90,0.6,'Deduction Grading','test2','e4555034a81843e','Flat',9),('f0a2d279056b4a8','Quiz1',100,0.4,'Deduction Grading','bb','549905146365490','Flat',12),('f0a2d279056b4a8','Quiz2',150,0.3,'Deduction Grading','cc','9327389d68a348e','Percentage',3),('f0a2d279056b4a8','HW1',100,0.3,'Absolute Grading','aa','b8badd6adb9f4d3','Percentage',11);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -202,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-13 20:21:01
+-- Dump completed on 2019-12-14  0:11:47

@@ -16,15 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
-import classSrc.Assignment;
-import classSrc.Course;
-import classSrc.EnrolledStudent;
-import classSrc.Grade;
-import classSrc.Student;
-import classSrc.Teacher;
-
-
-
+import classSrc.*;
 
 public class database {
 	private String url = "jdbc:mysql://127.0.0.1:3306/mySql?useUnicode=true&characterEncoding=utf-8&useSSL=false";
@@ -145,37 +137,83 @@ public class database {
 			}
 		}
 		catch(Exception e) {
-			System.out.println("search course fail");  
+			System.out.println("show course fail");  
             e.printStackTrace();
 		}
 		return courses;
 	}
 	
-	//add section for one course
-	public void addSection(int SectionID, int CourseID) {
-		sql = "insert into gradingsystem.Section( SectionID, CourseID) values ('" + SectionID+ "'," + "'" + CourseID +"')" ;
-		try {
-			stmt.executeUpdate(sql);
-		}
-		catch(Exception e) {
-			System.out.println("add section fail");  
-            e.printStackTrace();
-		}
-	}
+//	//add section for one course
+//	public void addSection(int SectionID, int CourseID) {
+//		sql = "insert into gradingsystem.Section( SectionID, CourseID) values ('" + SectionID+ "'," + "'" + CourseID +"')" ;
+//		try {
+//			stmt.executeUpdate(sql);
+//		}
+//		catch(Exception e) {
+//			System.out.println("add section fail");  
+//            e.printStackTrace();
+//		}
+//	}
 	
-	//search all section for one course
-	public ResultSet searchsection(int CourseID) {
-		sql = "select * from gradingsystem.Section where CourseID = " + CourseID;
+	public ArrayList<Assignment> loadTemplate(){
+		ArrayList<Assignment> template = new ArrayList<Assignment>();
+		sql = "select * from gradingsystem.TaskTemplate" ;
 		try {
 			res = stmt.executeQuery(sql);
+			while ( res.next()) {
+				template.add(new Assignment(res.getString("Type"),res.getString("Name"), res.getDouble("FullCredit"), res.getDouble("Weight"),res.getString("Curve"), res.getDouble("CurveValue")));
+
+			}
 		}
 		catch(Exception e) {
-			System.out.println("search sections for one course fail");  
-            e.printStackTrace();
+			System.out.println("show student fail");  
+			e.printStackTrace();
 		}
-		return res;
+		return template;
 	}
 	
+	public boolean saveTemplate(ArrayList<Assignment> ass){ 
+		//clear all the data in tasktemplate
+		sql = "delete from gradingsystem.TaskTemplate";
+		System.out.println(sql);
+		try {
+			stmt.execute(sql);
+			for(Assignment a : ass) {
+				sql = "insert into gradingsystem.TaskTemplate(Name, FullCredit, Weight, Curve, CurveValue, Type)"
+						+ "values ('"
+						+ a.getName() + "'," 
+						+ a.getFullCredit() + ","
+						+ a.getWeight() + ","
+						+ "'" + a.getCurve().getCurveString() + "',"
+						+ a.getCurve().getAmount() + ","
+						+ "'" + a.getType() + "')";
+				System.out.println(sql);
+				stmt.executeUpdate(sql);
+			}
+			success =true;
+		}
+		catch(Exception e) {
+			success = false;
+			System.out.println("save template fail");  
+			e.printStackTrace();
+		}
+		// insert all the data from ass
+		return success;
+	}
+//	
+//	//search all section for one course
+//	public ResultSet searchsection(int CourseID) {
+//		sql = "select * from gradingsystem.Section where CourseID = " + CourseID;
+//		try {
+//			res = stmt.executeQuery(sql);
+//		}
+//		catch(Exception e) {
+//			System.out.println("search sections for one course fail");  
+//            e.printStackTrace();
+//		}
+//		return res;
+//	}
+//	
 	/*Student operation:*/
 	
 	//update student
@@ -240,7 +278,7 @@ public class database {
 			}
 		}
 		catch(Exception e) {
-			System.out.println("show student fail");  
+			System.out.println("search student fail");  
             e.printStackTrace();
 		}
 		return searchStudent;
@@ -353,26 +391,30 @@ public class database {
 			}
 		}
 		catch(Exception e) {
-			System.out.println("search all tasks fail");
+			System.out.println("show tasks fail");
 			e.printStackTrace();
 		}
 		return assignments;
 	}
 	
-	/*grade operation*/
+//	//add grade
+//	public void addGrade(int CourseID, String TaskName, String StudentID, int score) {
+//		sql = "insert into gradingsystem.Grade(CourseID, TaskName, StudentID, Score)"
+//				+ "values ('" + CourseID + "'," + "'" + TaskName + "'," + "'" + StudentID + "'," + "'" + score + "')";
+//		try {
+//			stmt.executeUpdate(sql);
+//		}
+//		catch(Exception e) {
+//			System.out.println("all grades fail");
+//			e.printStackTrace();
+//		}
+//	}
+//	
 	
-	//add grade
-	public void addGrade(int CourseID, String TaskName, String StudentID, int score) {
-		sql = "insert into gradingsystem.Grade(CourseID, TaskName, StudentID, Score)"
-				+ "values ('" + CourseID + "'," + "'" + TaskName + "'," + "'" + StudentID + "'," + "'" + score + "')";
-		try {
-			stmt.executeUpdate(sql);
-		}
-		catch(Exception e) {
-			System.out.println("all grades fail");
-			e.printStackTrace();
-		}
-	}
+	
+	/*
+	 * grade operation
+	 * */
 	
 	//update grade
 	public void updateGrade(Course course) {
@@ -394,6 +436,7 @@ public class database {
 		}
 		
 	}	
+	
 	//search one student's grades in one Course
 	public Grade studentGrade(String CourseID, String StudentID, String TaskID, Assignment a) {
 		sql = "select * from gradingsystem.Grade where CourseID = " + "'" +CourseID + "'" 
@@ -416,22 +459,23 @@ public class database {
 		return grade;
 	}
 	
-	//search all students' grades in one Course in one section
-	public ResultSet courseGrade(int CourseID, int section) {
-		sql = "select * from gradingsystem.Grade, gradingsystem.StudentCourse, gradingsystem.Student where " +
-				"gradingsystem.Grade.StudentID = gradingsystem.StudentCourse.StudentID and gradingsystem.Grade.CourseID = gradingsystem.StudentCourse.CourseID and gradingsystem.Grade.StudentID = gradingsystem.Student.StudentID and " +
-				"gradingsystem.Grade.CourseID = " + CourseID + " and Section = " + section;
-		try {
-			res = stmt.executeQuery(sql);
-		}
-		catch(Exception e) {
-			System.out.println("search all grade fail");
-			e.printStackTrace();
-		}
-		return res;
-		
-	}
+//	//search all students' grades in one Course in one section
+//	public ResultSet courseGrade(int CourseID, int section) {
+//		sql = "select * from gradingsystem.Grade, gradingsystem.StudentCourse, gradingsystem.Student where " +
+//				"gradingsystem.Grade.StudentID = gradingsystem.StudentCourse.StudentID and gradingsystem.Grade.CourseID = gradingsystem.StudentCourse.CourseID and gradingsystem.Grade.StudentID = gradingsystem.Student.StudentID and " +
+//				"gradingsystem.Grade.CourseID = " + CourseID + " and Section = " + section;
+//		try {
+//			res = stmt.executeQuery(sql);
+//		}
+//		catch(Exception e) {
+//			System.out.println("search all grade fail");
+//			e.printStackTrace();
+//		}
+//		return res;
+//		
+//	}
 	
+	//update student comment
 	public boolean updateStudentComments(EnrolledStudent student, Course course) {
 		try {
 			sql = "update gradingsystem.StudentCourse set Comment =" + "'" + student.getComment() + "'" + " where "
@@ -455,6 +499,7 @@ public class database {
 		return success;
 	}
 	
+	//update curve
 	public boolean updateCurve(Course course) {
 		try {
 			sql = "update gradingsystem.Course set Curve =" + "'" + course.getCurve().getCurveString() + "'," 

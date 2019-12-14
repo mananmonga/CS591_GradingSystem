@@ -124,17 +124,12 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 			list.add(s.getBonus());
 			System.out.println(s.getGrades().size());
 			for(Grade g : s.getGrades()) {
-<<<<<<< HEAD
-				
-				list.add(g.getCredit());
-=======
 				if(g.getAssignment().getType().equals("Deduction Grading")) {  //if the assignment is graded deduction style, then display the loaded grade appropriately
 					list.add(g.getCredit() - g.getAssignment().getFullCredit() );
 				}
 				else { //display the raw credit if not deduction style (i.e. absolute style)
 					list.add(g.getCredit());
 				}
->>>>>>> e6a37d14a4b5c320f4004247d324ce33cb8edd5e
 			}
 			data.add(list);
     	}
