@@ -9,7 +9,7 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 
 import classSrc.*;
-
+import database.*;
 
 public class GradingPage extends JPanel implements ActionListener, SettingChangeListener
 {	
@@ -39,6 +39,7 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
     CourseFrame rootframe;
+    database db = new database();
     
 	public GradingPage(Course course_, CourseFrame rootframe_)
 	{ 	
@@ -101,7 +102,9 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
+			System.out.println(s.getGrades().size());
 			for(Grade g : s.getGrades()) {
+				
 				list.add(g.getCredit());
 			}
 			data.add(list);
@@ -181,6 +184,7 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 				}
 			}
 		}
+		db.updateGrade(this.course);
 	}
 	
 	@Override

@@ -8,7 +8,7 @@ public class Assignment {
 	private String description = "";
 	private Double fullCredit;
 	private Double weight;
-	private Curve curve = null;
+	private Curve curve = new FlatCurve();
 
 	public Assignment(String type_, String name_, String description_, Double fullCredit_, Double weight_){
 		this.ID = UUIDGenerator.getUUID();
@@ -20,13 +20,20 @@ public class Assignment {
 		this.weight = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
-	public Assignment(String ID, String type_, String name_, String description_, Double fullCredit_, Double weight_){
+	public Assignment(String ID, String type_, String name_, String description_, Double fullCredit_, Double weight_, String curvetype, Double curvevalue){
 		this.ID = ID;
 		this.setType(type_);
 		this.name = name_;
 		this.description = description_;
 		this.fullCredit = fullCredit_;
 		this.weight = weight_;
+		Curve c = null;
+		if(curvetype.equals("Flat")) {
+    		c = new FlatCurve(curvevalue);
+    	}else if(curvetype.equals("Percentage")) {
+    		c = new PercentageCurve(curvevalue);
+    	}
+    	this.curve = c;
 	}
 	
 	public Assignment(Assignment ass){

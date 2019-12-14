@@ -20,6 +20,13 @@ public class Grade {
 		this.comments = comments_;
 	}
 	
+	public Grade(String id, Assignment a, Double credit_, String comments_){
+		this.ID = id;
+		this.assignment = a;
+		this.credit = credit_;
+		this.comments = comments_;
+	}
+	
 	public void setComment(String com) {
 		this.comments = com;
 	}

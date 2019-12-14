@@ -15,6 +15,6 @@ public abstract class Curve {
 	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
-	
+	abstract public String getCurveString();
 	//abstract public Double calculateCurvedPart(Double plainScore);
 }

@@ -9,6 +9,10 @@ public class PercentageCurve extends Curve{
 	public PercentageCurve(){ //no amount specified
 		super(0.0);
 	}
+	
+	public String getCurveString() {
+		return "Percentage";
+	}
 /*
 	@Override
 	public Double calculateCurvedPart(Double plainScore) {

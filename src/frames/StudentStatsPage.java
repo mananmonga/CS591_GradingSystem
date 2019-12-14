@@ -1,11 +1,13 @@
 package frames;
 
 import java.awt.*;
+
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 
 import classSrc.*;
+import database.*;
 
 
 public class StudentStatsPage extends JPanel implements ActionListener
@@ -31,6 +33,7 @@ public class StudentStatsPage extends JPanel implements ActionListener
     JTable jTable;
     Vector<Vector<Object>> data = new Vector<>();
     Course course;
+    database db = new database(); 
     
 	public StudentStatsPage(Course course_, EnrolledStudent student_)
 	{ 	
@@ -113,6 +116,8 @@ public class StudentStatsPage extends JPanel implements ActionListener
 					if(s.getID().equals(idText.getText().toString())) {
 						this.student = s;
 						break;
+					}else {
+						JOptionPane.showMessageDialog(getParent(), "Student not found.");
 					}
 				}
 			}else if(!nameText.getText().isEmpty()&&idText.getText().isEmpty()) {
@@ -120,6 +125,8 @@ public class StudentStatsPage extends JPanel implements ActionListener
 					if(s.getName().equals(nameText.getText().toString())) {
 						this.student = s;
 						break;
+					}else {
+						JOptionPane.showMessageDialog(getParent(), "Student not found.");
 					}
 				}
 			}else {
@@ -127,6 +134,8 @@ public class StudentStatsPage extends JPanel implements ActionListener
 					if(s.getName().equals(nameText.getText().toString())&&s.getID().equals(idText.getText().toString())) {
 						this.student = s;
 						break;
+					}else {
+						JOptionPane.showMessageDialog(getParent(), "Student not found.");
 					}
 				}
 			}
@@ -151,6 +160,7 @@ public class StudentStatsPage extends JPanel implements ActionListener
 				this.student.getGrades().get(i-1).setComment(jTable.getValueAt(i, 2).toString());
 			}
 		}
+		db.updateStudentComments(this.student,this.course);
 	}
 }
 

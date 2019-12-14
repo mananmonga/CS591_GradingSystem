@@ -8,7 +8,7 @@ public class Course {
     private String Code;
     private String description = "";
     private String createDate;
-    private Curve curve = null;
+    private Curve curve = new FlatCurve();
     private ArrayList<EnrolledStudent> enrolledStudents = new ArrayList<EnrolledStudent>();
     private ArrayList<Assignment> assignments = new ArrayList<Assignment>();
 
@@ -19,12 +19,19 @@ public class Course {
         this.createDate = new Date().toString();
     }
     
-    public Course(String Name, String Code, String UID, String Description, String createDate) {
+    public Course(String Name, String Code, String UID, String Description, String createDate, String curvetype, Double curveValue) {
     	this.name = Name;
     	this.Code = Code;
     	this.UID = UID;
     	this.createDate = createDate;
     	this.description = Description;
+    	Curve c = null;
+    	if(curvetype.equals("Flat")) {
+    		c = new FlatCurve(curveValue);
+    	}else if(curvetype.equals("Percentage")) {
+    		c = new PercentageCurve(curveValue);
+    	}
+    	this.curve = c;
     }
     
     public String getCreateDate() {

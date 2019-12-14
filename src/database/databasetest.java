@@ -83,17 +83,17 @@ public class databasetest {
 		//test grade
 		System.out.println("Show one student's grade in one course");
 
-		res = db.studentGrade(2, "U20");
-		while(res.next()) {
-			String Courseid = res.getString("CourseID");
-			String TaskName = res.getString("TaskName");
-			String Studentid = res.getString("studentID");
-            String Score = res.getString("Score");
-            
-            System.out.println("CourseID :" + Courseid + "   " + "TaskName :" + TaskName + "   " + "Student id:" + Studentid +"     "+"Score: " + Score);
-            
-		}
-		System.out.println("\n");
+//		res = db.studentGrade(2, "U20");
+//		while(res.next()) {
+//			String Courseid = res.getString("CourseID");
+//			String TaskName = res.getString("TaskName");
+//			String Studentid = res.getString("studentID");
+//            String Score = res.getString("Score");
+//            
+//            System.out.println("CourseID :" + Courseid + "   " + "TaskName :" + TaskName + "   " + "Student id:" + Studentid +"     "+"Score: " + Score);
+//            
+//		}
+//		System.out.println("\n");
 		
 		System.out.println("Show all grade in one course");
 		res = db.courseGrade(1, 1);

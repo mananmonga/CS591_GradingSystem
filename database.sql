@@ -28,6 +28,8 @@ CREATE TABLE `Course` (
   `CourseCode` varchar(45) NOT NULL,
   `Description` varchar(45) DEFAULT NULL,
   `CreateDate` varchar(45) DEFAULT NULL,
+  `Curve` varchar(45) DEFAULT NULL,
+  `CurveValue` double DEFAULT NULL,
   PRIMARY KEY (`CourseID`),
   UNIQUE KEY `CourseID_UNIQUE` (`CourseID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -39,7 +41,7 @@ CREATE TABLE `Course` (
 
 LOCK TABLES `Course` WRITE;
 /*!40000 ALTER TABLE `Course` DISABLE KEYS */;
-INSERT INTO `Course` VALUES ('4f74842cee744bc','OOd','CS591','test1','Wed Dec 11 15:48:14 EST 2019');
+INSERT INTO `Course` VALUES ('4f74842cee744bc','OOd','CS591','test1','Wed Dec 11 15:48:14 EST 2019','Percentage',3),('f0a2d279056b4a8','algorithm','CS530','homer','Fri Dec 13 20:10:27 EST 2019','Flat',4);
 /*!40000 ALTER TABLE `Course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,6 +76,7 @@ CREATE TABLE `Grade` (
 
 LOCK TABLES `Grade` WRITE;
 /*!40000 ALTER TABLE `Grade` DISABLE KEYS */;
+INSERT INTO `Grade` VALUES ('f0a2d279056b4a8','549905146365490','U29',43,'rerr','0f9e4864a0de4c0'),('f0a2d279056b4a8','9327389d68a348e','U27',43,'dwq','11da1a27b3f7440'),('f0a2d279056b4a8','b8badd6adb9f4d3','U29',4,'deda','55fea214a240483'),('f0a2d279056b4a8','b8badd6adb9f4d3','U30',4,'rf','7c5df14baf4947b'),('f0a2d279056b4a8','9327389d68a348e','U29',87,'dew','83adfe2e5e3f4f8'),('f0a2d279056b4a8','549905146365490','U27',6,'ewq','a4ac502f1130497'),('f0a2d279056b4a8','9327389d68a348e','U30',23,'dede','af8f08727a4e465'),('f0a2d279056b4a8','b8badd6adb9f4d3','U27',4,'w','ced59689e03c4a5'),('f0a2d279056b4a8','549905146365490','U30',8,'frfr','edb284616875492'),('4f74842cee744bc','e4555034a81843e','cc',20,'gt','hyhyh'),('4f74842cee744bc','62929f71b4fd4b1','cc',76,'d','rfrfr');
 /*!40000 ALTER TABLE `Grade` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -123,7 +126,7 @@ CREATE TABLE `Student` (
 
 LOCK TABLES `Student` WRITE;
 /*!40000 ALTER TABLE `Student` DISABLE KEYS */;
-INSERT INTO `Student` VALUES ('aa','Tian'),('bb','Zhelin2'),('cc','cc'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan'),('U27','Tian1'),('U29','Zhilin1'),('U30','Dennis1'),('U31','Tian');
+INSERT INTO `Student` VALUES ('aa','Tian'),('bb','Zhelin2'),('cc','cc'),('U22','Hou'),('U23','You'),('U24','Ding'),('U25','Tan'),('U27','Tian1'),('U29','Zhilin1'),('U30','Dennis1'),('U31','Tian'),('U32','TT'),('U34','TT2'),('U35','TTT');
 /*!40000 ALTER TABLE `Student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,6 +141,8 @@ CREATE TABLE `StudentCourse` (
   `StudentID` varchar(45) NOT NULL,
   `CourseID` varchar(45) NOT NULL,
   `section` int(11) DEFAULT NULL,
+  `Comment` varchar(45) DEFAULT NULL,
+  `Bonus` double DEFAULT NULL,
   PRIMARY KEY (`StudentID`,`CourseID`),
   KEY `CourseID_2_idx` (`CourseID`),
   CONSTRAINT `CourseID_2` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -151,7 +156,7 @@ CREATE TABLE `StudentCourse` (
 
 LOCK TABLES `StudentCourse` WRITE;
 /*!40000 ALTER TABLE `StudentCourse` DISABLE KEYS */;
-INSERT INTO `StudentCourse` VALUES ('bb','4f74842cee744bc',1),('cc','4f74842cee744bc',1);
+INSERT INTO `StudentCourse` VALUES ('cc','4f74842cee744bc',1,'hard-worker',10),('U27','f0a2d279056b4a8',1,'wdsqw',0),('U29','f0a2d279056b4a8',1,'ed',0),('U30','f0a2d279056b4a8',1,'rfr',0);
 /*!40000 ALTER TABLE `StudentCourse` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,6 +175,8 @@ CREATE TABLE `task` (
   `type` varchar(45) DEFAULT NULL,
   `Description` varchar(45) DEFAULT NULL,
   `TaskID` varchar(45) NOT NULL,
+  `Curve` varchar(45) DEFAULT NULL,
+  `CurveValue` double DEFAULT NULL,
   PRIMARY KEY (`CourseID`,`TaskID`),
   UNIQUE KEY `TaskID_UNIQUE` (`TaskID`),
   CONSTRAINT `CourseID_3` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -182,7 +189,7 @@ CREATE TABLE `task` (
 
 LOCK TABLES `task` WRITE;
 /*!40000 ALTER TABLE `task` DISABLE KEYS */;
-INSERT INTO `task` VALUES ('4f74842cee744bc','HW1',100,0.3,'Absolute Grading','','62929f71b4fd4b1'),('4f74842cee744bc','Quiz1',100,0.7,'Deduction Grading','','e4555034a81843e');
+INSERT INTO `task` VALUES ('4f74842cee744bc','HW1',100,0.3,'Absolute Grading','test1','62929f71b4fd4b1','Percentage',1),('4f74842cee744bc','Quiz1',90,0.7,'Deduction Grading','test2','e4555034a81843e','Flat',9),('f0a2d279056b4a8','Quiz1',100,0.4,'Deduction Grading','bb','549905146365490','Flat',12),('f0a2d279056b4a8','Quiz2',150,0.3,'Deduction Grading','cc','9327389d68a348e','Percentage',3),('f0a2d279056b4a8','HW1',100,0.3,'Absolute Grading','aa','b8badd6adb9f4d3','Percentage',11);
 /*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -195,4 +202,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-13 15:52:04
+-- Dump completed on 2019-12-13 20:21:01

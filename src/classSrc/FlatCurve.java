@@ -9,6 +9,10 @@ public class FlatCurve extends Curve{
 	public FlatCurve(){ //no amount specified
 		super(0.0);
 	}
+	
+	public String getCurveString() {
+		return "Flat";
+	}
 /*
 	public Double calculateCurvedPart(Double plainScore) {
 		return this.getAmount();

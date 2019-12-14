@@ -6,7 +6,7 @@ import java.util.*;
 import javax.swing.*;
 
 import classSrc.*;
-
+import database.*;
 
 public class CurvePage extends JPanel implements ActionListener, SettingChangeListener
 {	
@@ -27,6 +27,7 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
     	addItem("Percentage");
     }};
     Course course;
+    database db = new database();
     
 	public CurvePage(Course course_)
 	{ 	
@@ -119,6 +120,7 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 				this.course.getAssignments().get(i).setCurve(c);
 			}
 		}
+		db.updateCurve(this.course);
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.util.HashSet;
 import classSrc.Assignment;
 import classSrc.Course;
 import classSrc.EnrolledStudent;
+import classSrc.Grade;
 import classSrc.Student;
 import classSrc.Teacher;
 
@@ -31,13 +32,18 @@ public class database {
 	private String password = "root";
 	private Connection connect;
 	private Statement stmt;
+	private Statement stmt1;
+	private Statement stmt2;
+	private Statement stmt3;
 	private ResultSet res;
+	private ResultSet res1;
+	private ResultSet res2;
+	private ResultSet res3;
 	private String sql;
 	private boolean success;
 	private ArrayList<Course> courses;
 	private ArrayList<EnrolledStudent> students;
 	private ArrayList<Assignment> assignments;
-	private Student searchStudent = null;
 	
 	//connect the database
 	public database() {
@@ -46,6 +52,9 @@ public class database {
              Class.forName("com.mysql.jdbc.Driver");     //Load mysql jdbc driver
              connect = DriverManager.getConnection(this.url,this.username,this.password);
              stmt = connect.createStatement();
+             stmt1 = connect.createStatement();
+             stmt2 = connect.createStatement();
+             stmt3 = connect.createStatement();
              System.out.println("Success loading Mysql Driver!");  
          }  
          catch (Exception e) 
@@ -73,9 +82,10 @@ public class database {
 	//add course in database
 	public boolean addCourse(Course course) {
 		try {
-			sql = "insert into gradingsystem.Course( CourseName, CourseID, CourseCode, Description, CreateDate ) values ('" +course.getName() + "'," 
+			sql = "insert into gradingsystem.Course( CourseName, CourseID, CourseCode, Description, CreateDate, Curve, CurveValue ) values ('" +course.getName() + "'," 
 					+ "'" + course.getUID() + "'," + "'" + course.getCode() + "'," + "'" + course.getDescription() + "',"
-					+ "'" + course.getCreateDate() + "')";
+					+ "'" + course.getCreateDate() + "'," + "'" + course.getCurve().getCurveString() + "'," + course.getCurve().getAmount() + ")";
+			System.out.println(sql);
 			stmt.executeUpdate(sql);
 			success = true;
 		}
@@ -128,10 +138,10 @@ public class database {
 		try {
 			res = stmt.executeQuery(sql);
 			while ( res.next()) {
-				Course c = new Course(res.getString("CourseName"), res.getString("CourseCode"), res.getString("CourseID"), res.getString("Description"), res.getString("CreateDate"));
+				Course c = new Course(res.getString("CourseName"), res.getString("CourseCode"), res.getString("CourseID"), res.getString("Description"), res.getString("CreateDate"), res.getString("Curve"), res.getDouble("CurveValue"));
 				c.setAssignments(showTask(c));
 				c.setEnrollStudent(showStudent(c));
-				courses.add(c);
+				courses.add(c); 
 			}
 		}
 		catch(Exception e) {
@@ -178,7 +188,8 @@ public class database {
 				if(!studentExist(s)) {
 					sql = "insert into gradingsystem.Student(StudentID, Name) values ('" + s.getID() + "'," + "'"+ s.getName() + "')";
 					stmt.executeUpdate(sql);
-					sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID, Section) values ('" + s.getID() + "'," + "'" + course.getUID() + "'," + 1 +")";
+					sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID, Section, Bonus, Comment) values ('" + s.getID() + "'," + "'" 
+							+ course.getUID() + "'," + 1 + "," + s.getBonus() + ",'" + s.getComment() + "')";
 					stmt.executeUpdate(sql);
 				}
 				else {
@@ -192,7 +203,9 @@ public class database {
 						stmt.executeUpdate(sql);
 					}
 					else {
-						sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID) values ('" + s.getID() + "'" + "'" + course.getUID() + "')";
+						sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID, Section, Bonus, Comment) values ('" + s.getID() + "'," + "'" 
+								+ course.getUID() + "'," + 1 + "," + s.getBonus() + ",'" + s.getComment() + "')";
+						System.out.println(sql);
 						stmt.executeUpdate(sql);
 					}
 				}
@@ -218,6 +231,7 @@ public class database {
 	//search student
 	public Student searchStudent(Student student) {
 		sql = "select * from gradingsystem.Student where StudentID =" + "'"+student.getID() +"'";
+		Student searchStudent = null;
 		try {
 			res = stmt.executeQuery(sql);
 			while(res.next()) {
@@ -236,12 +250,19 @@ public class database {
 	public ArrayList<EnrolledStudent> showStudent(Course course) {
 		students = new ArrayList<EnrolledStudent>();
 		sql = "select * from gradingsystem.StudentCourse, gradingsystem.Student where CourseID = " + "'" + course.getUID() 
-			+ "' and gradingsystem.Student.StudentID = gradingsystem.StudentCourse.StudentID ";
+			+ "' and gradingsystem.Student.StudentID = gradingsystem.StudentCourse.StudentID";
 		try {
-			res = stmt.executeQuery(sql);
-			while(res.next()) {
-				EnrolledStudent student = new EnrolledStudent(res.getString("Name"), res.getString("StudentID"));
+			res2 = stmt2.executeQuery(sql);
+			while( res2.next()) {
+				EnrolledStudent student = new EnrolledStudent(res2.getString("Name"), res2.getString("StudentID"), null, res2.getDouble("Bonus"), res2.getString("Comment"));
 				students.add(student);
+			}
+			for(EnrolledStudent s : students) {
+				ArrayList<Grade> grades = new ArrayList<Grade>();
+				for(Assignment a : course.getAssignments()) {
+					grades.add(studentGrade(course.getUID(),s.getID(),a.getID(),a));
+				}
+				s.setGrades(grades);
 			}
 		}
 		catch(Exception e) {
@@ -255,7 +276,7 @@ public class database {
 	//determine whether the student is in the database or not
 	public boolean studentExist(Student student) {
 		boolean Exist = false;
-		searchStudent = searchStudent(student);
+		Student searchStudent = searchStudent(student);
 		try {
 			if(searchStudent != null) {
 				Exist = true;
@@ -324,10 +345,10 @@ public class database {
 		assignments = new ArrayList<>();
 		sql = "select * from gradingsystem.Task where CourseID = "+ "'" + course.getUID() + "'";
 		try {
-			res = stmt.executeQuery(sql);
-			while(res.next()) {
-				Assignment ass = new Assignment(res.getString("TaskID"), res.getString("type"),res.getString("Name"), res.getString("Description"),
-									res.getDouble("FullCredit"), res.getDouble("Weight"));
+			res1 = stmt1.executeQuery(sql);
+			while(res1.next()) {
+				Assignment ass = new Assignment(res1.getString("TaskID"), res1.getString("type"),res1.getString("Name"), res1.getString("Description"),
+									res1.getDouble("FullCredit"), res1.getDouble("Weight"), res1.getString("Curve"), res1.getDouble("CurveValue"));
 				assignments.add(ass);
 			}
 		}
@@ -354,43 +375,45 @@ public class database {
 	}
 	
 	//update grade
-	public void updateGrade(int CourseID, String TaskName, String StudentID, int score) {
-		sql = "update gradingsystem.Grade set Score =" + score + " where "
-				+ "CourseID = " + CourseID + " and TaskName = " + "'" + TaskName + "'" + " and StudentID = " + "'" + StudentID + "'";
+	public void updateGrade(Course course) {
 		try {
+			sql = "delete from gradingsystem.Grade where CourseId = " + "'" + course.getUID() + "'";
 			stmt.executeUpdate(sql);
+			for(EnrolledStudent s :course.getEnrollStudent()) {
+				for(Grade g : s.getGrades()) {
+					sql = "insert into gradingsystem.Grade (CourseId, TaskID, StudentID, Score, Comment, GradeID)"
+							+ "values ('"+ course.getUID() + "'," + "'" + g.getAssignment().getID() + "',"
+							+ "'" + s.getID() + "'," + g.getCredit() + ",'" + g.getComment() + "'," + "'" + g.getID() + "')";
+					stmt.executeUpdate(sql);
+				}
+			}
 		}
 		catch(Exception e) {
 			System.out.println("upgrade grade fail");
 			e.printStackTrace();
 		}
 		
-	}
-	
-	//delete grade
-	public void deleteGrade(int CourseID, String TaskName, String StudentID) {
-		sql = "delete from gradingsystem.Grade where "
-				+ "CourseID = " + CourseID + " and TaskName = " + "'" + TaskName + "'" + " and StudentID = " + "'" + StudentID + "'";
-		try {
-			stmt.executeUpdate(sql);
-		}
-		catch(Exception e) {
-			System.out.println("delete grade fail");
-			e.printStackTrace();
-		}
-	}
-	
+	}	
 	//search one student's grades in one Course
-	public ResultSet studentGrade(int CourseID, String StudentID) {
-		sql = "select * from gradingsystem.Grade where CourseID = " + CourseID + " and StudentID = " + "'" + StudentID + "'";
+	public Grade studentGrade(String CourseID, String StudentID, String TaskID, Assignment a) {
+		sql = "select * from gradingsystem.Grade where CourseID = " + "'" +CourseID + "'" 
+				+ " and StudentID = " + "'" + StudentID + "'"
+				+ " and TaskID = " + "'" + TaskID + "'";
+		
+		Grade grade = null;
 		try {
-			res = stmt.executeQuery(sql);
+			res3 = stmt3.executeQuery(sql);
+			while(res3.next()) {
+				grade = new Grade(res3.getString("GradeID"),a, res3.getDouble("Score"), res3.getString("Comment"));
+				break;
+			}
+			return grade;
 		}
 		catch(Exception e) {
 			System.out.println("delete grade fail");
 			e.printStackTrace();
 		}
-		return res;
+		return grade;
 	}
 	
 	//search all students' grades in one Course in one section
@@ -409,6 +432,53 @@ public class database {
 		
 	}
 	
+	public boolean updateStudentComments(EnrolledStudent student, Course course) {
+		try {
+			sql = "update gradingsystem.StudentCourse set Comment =" + "'" + student.getComment() + "'" + " where "
+					    + "CourseID = " + "'" + course.getUID() + "'" + " and StudentID = " + "'" + student.getID() + "'";
+			System.out.println(sql);
+			stmt.executeUpdate(sql);
+			for(Grade g :student.getGrades()) {
+				sql = "update gradingsystem.Grade set Comment =" + "'" + g.getComment() + "'"+ " where "
+				     + "CourseID = " + "'" + course.getUID() + "'" + " and StudentID = " + "'" + student.getID() + "'"
+				     + "and TaskId = " + "'" +g.getAssignment().getID() + "'";
+				System.out.println(sql);
+				stmt.executeUpdate(sql);
+			}
+			success = true;
+		}
+		catch(Exception e) {
+			success = false;
+			System.out.println("update comment fail");  
+		    e.printStackTrace();
+		}
+		return success;
+	}
+	
+	public boolean updateCurve(Course course) {
+		try {
+			sql = "update gradingsystem.Course set Curve =" + "'" + course.getCurve().getCurveString() + "'," 
+					+ "CurveValue = " + course.getCurve().getAmount()	
+					+ " where "  + "CourseID = " + "'" + course.getUID() + "'";
+			System.out.println(sql);
+			stmt.executeUpdate(sql);
+			for(Assignment a :course.getAssignments()) {
+				sql = "update gradingsystem.task set Curve =" + "'" + a.getCurve().getCurveString() + "',"
+					+ "CurveValue = " + a.getCurve().getAmount()
+					+ " where "  + "CourseID = " + "'" + course.getUID() + "'"
+				    + "and TaskId = " + "'" +a.getID() + "'";
+				System.out.println(sql);
+				stmt.executeUpdate(sql);
+			}
+			success = true;
+		}
+		catch(Exception e) {
+			success = false;
+			System.out.println("update curve fail");  
+		    e.printStackTrace();
+		}
+		return success;
+	}
 
 	
 	
