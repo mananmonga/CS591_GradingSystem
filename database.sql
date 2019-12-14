@@ -81,31 +81,6 @@ INSERT INTO `Grade` VALUES ('f0a2d279056b4a8','549905146365490','U29',43,'rerr',
 UNLOCK TABLES;
 
 --
--- Table structure for table `Section`
---
-
-DROP TABLE IF EXISTS `Section`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Section` (
-  `SectionID` int(11) NOT NULL,
-  `CourseID` varchar(45) NOT NULL,
-  PRIMARY KEY (`SectionID`,`CourseID`),
-  KEY `CourseID_1_idx` (`CourseID`),
-  CONSTRAINT `CourseID_1` FOREIGN KEY (`CourseID`) REFERENCES `Course` (`CourseID`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Section`
---
-
-LOCK TABLES `Section` WRITE;
-/*!40000 ALTER TABLE `Section` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Section` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `Student`
 --
 
@@ -189,6 +164,30 @@ INSERT INTO `TaskTemplate` VALUES ('HW2',100,0.4,'Percentage',1,'Absolute Gradin
 UNLOCK TABLES;
 
 --
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User` (
+  `Name` varchar(45) NOT NULL,
+  `Password` varchar(45) NOT NULL,
+  PRIMARY KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `User`
+--
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+INSERT INTO `User` VALUES ('admin','admin');
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `task`
 --
 
@@ -230,4 +229,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-12-14  0:11:47
+-- Dump completed on 2019-12-14 18:42:26
