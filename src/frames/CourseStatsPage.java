@@ -56,15 +56,26 @@ public class CourseStatsPage extends JPanel
     	}
 		columnNames1.add("Final Score");
 		data1.clear();
+		
+		//subheader for assignment full credit
+		Vector<Object> subheader = new Vector<>();
+		subheader.add("");
+		subheader.add("");
+		subheader.add("");
+		for(Assignment a : course.getAssignments()) {
+			subheader.add("/" + a.getFullCredit());
+		}
+		data1.add(subheader);
+		
 		for(EnrolledStudent s :course.getEnrollStudent()) {
     		Vector<Object> list = new Vector<>();
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
 			for(Grade g : s.getGrades()) {
-				list.add(g.getCredit());
+				list.add(g.calculatePercentageScore(true) + " (" + g.calculatePercentageScore(false) + ")");
 			}
-			list.add("total");
+			list.add(this.course.GetOverallScore(s, true).toString() + " (" + this.course.GetOverallScore(s, false).toString() + ")");
 			data1.add(list);
     	}
 		DefaultTableModel model = new DefaultTableModel(data1,columnNames1){
@@ -85,20 +96,73 @@ public class CourseStatsPage extends JPanel
 		label2.setFont(new Font(Font.DIALOG, Font.BOLD, 14));
 		listPanel2.add(label2,BorderLayout.NORTH);
 		columnNames2.clear();
-		columnNames2.add("Cretiria");
+		columnNames2.add("Criteria");
 		for(Assignment a : course.getAssignments()) {
-			columnNames2.add(a.getName());
+			columnNames2.add(a.getName()); 
     	}
 		columnNames2.add("Final Score");
 		data2.clear();
-		String[] cre = {"mean","max","min","median"};
+		String[] cre = {"mean","max","min","median", };
+		
+		//subheader for assignment full credit
+		Vector<Object> subheader = new Vector<>();
+		subheader.add("");
+		for(Assignment a : course.getAssignments()) {
+			subheader.add("/" + a.getFullCredit());
+		}
+		subheader.add("/100.0");
+		data2.add(subheader);
+		
+		//calculate the statistics for each assignment
+		ArrayList<StatisticsHolder> rawAssignmentsStats = new ArrayList<StatisticsHolder>();
+		ArrayList<StatisticsHolder> curvedAssignmentsStats = new ArrayList<StatisticsHolder>();
+		for(Assignment a : this.course.getAssignments()) {
+			rawAssignmentsStats.add(this.course.CalculateAssignmentStats(a, false));
+			curvedAssignmentsStats.add(this.course.CalculateAssignmentStats(a, true));
+		}
+		
+		//calculate the statistics for the overall course grades
+		StatisticsHolder rawOverallCourseStats = this.course.CalculateOverallCourseStats(false);
+		StatisticsHolder curvedOverallCourseStats = this.course.CalculateOverallCourseStats(true);
+		
 		for(String s : cre) {
     		Vector<Object> list = new Vector<>();
     		list.add(s);
-			for(Assignment g : this.course.getAssignments()) {
-				list.add("");
+			for(int i = 0; i < this.course.getAssignments().size(); i += 1) {
+				//list.add("");
+				String statDisplay = ""; //default
+				if(s.equals("mean")) {
+					statDisplay = curvedAssignmentsStats.get(i).GetAverage().toString() + " (" + rawAssignmentsStats.get(i).GetAverage().toString() + ")";
+				}
+				else if(s.equals("max")) {
+					statDisplay = curvedAssignmentsStats.get(i).GetMax().toString() + " (" + rawAssignmentsStats.get(i).GetMax().toString() + ")";
+				}
+				else if(s.equals("min")) {
+					statDisplay = curvedAssignmentsStats.get(i).GetMin().toString() + " (" + rawAssignmentsStats.get(i).GetMin().toString() + ")";
+				}
+				else if(s.equals("median")) {
+					statDisplay = curvedAssignmentsStats.get(i).GetMedian().toString() + " (" + rawAssignmentsStats.get(i).GetMedian().toString() + ")";
+				}
+				list.add(statDisplay);
+				
 			}
-			list.add("total");
+			
+			if(s.equals("mean")) {
+				list.add(curvedOverallCourseStats.GetAverage().toString() + " (" + rawOverallCourseStats.GetAverage().toString() + ")");
+			}
+			else if(s.equals("max")) {
+				list.add(curvedOverallCourseStats.GetMax().toString() + " (" + rawOverallCourseStats.GetMax().toString() + ")");
+			}
+			else if(s.equals("min")) {
+				list.add(curvedOverallCourseStats.GetMin().toString() + " (" + rawOverallCourseStats.GetMin().toString() + ")");
+			}
+			else if(s.equals("median")) {
+				list.add(curvedOverallCourseStats.GetMedian().toString() + " (" + rawOverallCourseStats.GetMedian().toString() + ")");
+			}
+			else {
+				list.add("total"); //default
+			}
+			
 			data2.add(list);
     	}
 		jTable2 = new JTable(new DefaultTableModel(data2,columnNames2)){

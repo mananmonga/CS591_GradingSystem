@@ -14,4 +14,9 @@ public class FlatCurve extends Curve{
 		return this.getAmount();
 	};*/
 
+	@Override
+	public Double ConvertRawToCurved(Double rawCredit) {
+		return rawCredit + amount;
+	}
+
 }

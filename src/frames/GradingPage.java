@@ -96,20 +96,45 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 			columnNames.add(a.getName());
     	}
 		data.clear();
+		
+		//make subheaders for assignment types and full credits
+		Vector<Object> subheader1 = new Vector<>();
+		subheader1.add("");
+		subheader1.add("");
+		subheader1.add("");
+		for(Assignment a : course.getAssignments()) {
+			subheader1.add(a.getType());
+    	}
+		data.add(subheader1);
+		
+		Vector<Object> subheader2 = new Vector<>();
+		subheader2.add("");
+		subheader2.add("");
+		subheader2.add("");
+		for(Assignment a : course.getAssignments()) {
+			subheader2.add("/" + a.getFullCredit());
+    	}
+		data.add(subheader2);
+		
 		for(EnrolledStudent s :course.getEnrollStudent()) {
     		Vector<Object> list = new Vector<>();
     		list.add(s.getID());
     		list.add(s.getName());
 			list.add(s.getBonus());
 			for(Grade g : s.getGrades()) {
-				list.add(g.getCredit());
+				if(g.getAssignment().getType().equals("Deduction Grading")) {  //if the assignment is graded deduction style, then display the loaded grade appropriately
+					list.add(g.getCredit() - g.getAssignment().getFullCredit() );
+				}
+				else { //display the raw credit if not deduction style (i.e. absolute style)
+					list.add(g.getCredit());
+				}
 			}
 			data.add(list);
     	}
 		DefaultTableModel myModel = new DefaultTableModel(data,columnNames) {
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
-		    	if(column<2)
+		    	if(column<2 || row < 2)
 		    		return false;
 		        return true;
 		    }
@@ -171,13 +196,20 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(null); 
 		int column = jTable.getColumnCount();
 		int row = jTable.getRowCount();
-		for(int i = 0; i < row; i++) {
+		for(int i = 2; i < row; i++) {
 			for(int j = 2; j < column; j++) {
 				System.out.println(this.course.getEnrollStudent().get(i).getName()+" ");
 				if(j==2) {
 					this.course.getEnrollStudent().get(i).setBonus(Double.valueOf(jTable.getValueAt(i, j).toString()));
 				}else {
-					this.course.getEnrollStudent().get(i).getGrades().get(j-3).setCredit(Double.valueOf(jTable.getValueAt(i, j).toString()));
+					
+					String gradeAssignmentType = this.course.getAssignments().get(j-3).getType();
+					//if the assignment in this column is deducted style, then convert the deducted to absolute
+					Double absoluteGradeValue = Double.valueOf(jTable.getValueAt(i, j).toString());
+					if(gradeAssignmentType.equals("Deduction Grading")){
+						absoluteGradeValue += this.course.getAssignments().get(j-3).getFullCredit();
+					}
+					this.course.getEnrollStudent().get(i).getGrades().get(j-3).setCredit(absoluteGradeValue);
 				}
 			}
 		}

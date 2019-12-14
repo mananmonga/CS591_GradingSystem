@@ -27,6 +27,93 @@ public class Course {
     	this.description = Description;
     }
     
+    //returns the overall score for one particular student in this course, based on the credits and weights of all their grades, the curve of each assignment, and the curve of the overall course
+    public Double GetOverallScore(EnrolledStudent es, boolean curved) {
+    	
+    	Double total = 0.0;
+    	
+    	ArrayList<Grade> grades = es.getGrades();
+    	
+    	for(int i = 0; i < grades.size(); i += 1) {
+    		Double currentGradeContribution = grades.get(i).calculatePercentageScore(curved) * grades.get(i).getAssignment().getWeight();
+    		total += currentGradeContribution;
+    	}
+    	
+    	Double adjustedTotal = curved && this.hasCurve() ? curve.ConvertRawToCurved(total + es.getBonus()) : total;
+    	
+    	return adjustedTotal;
+    }
+    
+    public StatisticsHolder CalculateOverallCourseStats(boolean curved) {
+    	
+    	ArrayList<Double> courseGrades = new ArrayList<Double>();
+    	
+    	for(EnrolledStudent es : enrolledStudents) {
+    		courseGrades.add(GetOverallScore(es, curved));
+    	}
+    	
+    	Collections.sort(courseGrades);
+    	
+    	
+    	Double average = 0.0;
+    	
+    	for(Double courseGrade : courseGrades) {
+    		System.out.println(courseGrade);
+    		average += courseGrade / Double.valueOf(courseGrades.size());
+    	}
+    	
+    	int medianIndex = courseGrades.size() / 2;
+    	
+    	Double median = courseGrades.get(medianIndex);
+    	Double min = courseGrades.get(0);
+    	Double max = courseGrades.get(courseGrades.size() - 1);
+    	
+    	System.out.println(average + " " + median + " " + min + " " + max);
+    	
+    	return new StatisticsHolder(average, median, min, max);
+    	
+    }
+    
+    
+    public StatisticsHolder CalculateAssignmentStats(Assignment a, boolean curved) {
+    	
+    	//first go through the grades of every student and store which ones belong to this assignment
+    	ArrayList<Grade> assignmentGrades = new ArrayList<Grade>();
+    	for(int i = 0; i < this.enrolledStudents.size(); i += 1) {
+    		ArrayList<Grade> currentStudentGrades = enrolledStudents.get(i).getGrades();
+    		for(int j = 0; j < currentStudentGrades.size(); j += 1) {
+    			if(currentStudentGrades.get(j).getAssignment().getID().equals(a.getID()) ) {
+    				assignmentGrades.add(currentStudentGrades.get(j));
+    			}
+    		}
+    	}
+    	
+    	//return empty stats holder if there are no grades for this assignment (automatically assigns 0.0 to every statistic)
+    	if(assignmentGrades.size() < 1) return new StatisticsHolder();
+    	
+    	Double average = 0.0;
+    	
+    	for(Grade g : assignmentGrades) {
+    		average += g.calculatePercentageScore(curved) / Double.valueOf(assignmentGrades.size());
+    	}
+    	
+    	ArrayList<Double> credits = new ArrayList<Double>();
+    	
+    	for(Grade g : assignmentGrades) {
+    		credits.add( g.calculatePercentageScore(curved));
+    	}
+    	
+    	Collections.sort(credits);
+    	int medianIndex = credits.size() / 2;
+    	
+    	Double median = credits.get(medianIndex);
+    	Double min = credits.get(0);
+    	Double max = credits.get(credits.size() - 1);
+    	
+    	return new StatisticsHolder(average, median, min, max);
+    }
+    
+    
     public String getCreateDate() {
 		return createDate;
 	}

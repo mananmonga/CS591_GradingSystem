@@ -9,9 +9,9 @@ public class PercentageCurve extends Curve{
 	public PercentageCurve(){ //no amount specified
 		super(0.0);
 	}
-/*
+	
 	@Override
-	public Double calculateCurvedPart(Double plainScore) {
-		return this.getAmount()*0.01*plainScore;
-	};*/
+	public Double ConvertRawToCurved(Double rawCredit) {
+		return rawCredit * (1.0 + amount);
+	}
 }
