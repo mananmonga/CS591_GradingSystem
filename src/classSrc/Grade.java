@@ -3,7 +3,7 @@ package classSrc;
 public class Grade {
 	
 	private String ID;
-	private Double credit;
+	private Double credit; //will be a negative number if this is a deducted assignment, positive if it is absolute
 	private Assignment assignment;
 	private String comments = "";
 	
@@ -68,19 +68,10 @@ public class Grade {
         return false;
     }
 	
-	/*
-	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
-	public Double CalculatePercentageScore(boolean curved) {
-		if(assignment.hasCurve() && curved) { //check if the assignment is actually curved first
-			return assignment.curve.calculateCurvedScore(credit, assignment.totalCredit);
-		}
-		else {
-			return (credit / assignment.totalCredit);
-		}
+	//calculates the student's percentage grade by taking into account their credit earned, the assignment's max credit, and the curve of the assignment (if any)
+	public Double calculatePercentageScore(boolean curved) {
+		Double adjustedCredit = curved && assignment.hasCurve() ? assignment.getCurve().ConvertRawToCurved(credit) : credit;
+		Double percentageScore = adjustedCredit / assignment.getFullCredit();
+		return percentageScore * 100.0;
 	}
-	
-	//the string representation of this grade in the UI, depends on which type of scoring method the assignment uses (deducted, absolute, etc)
-	public String toString() {
-		return assignment.GetScoreDisplay(credit);
-	}*/
 }
