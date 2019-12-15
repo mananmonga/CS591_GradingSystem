@@ -18,10 +18,11 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 	JButton search = new JButton("Search");
 	JLabel name = new JLabel("Name:");
 	JLabel id = new JLabel("ID:");
+	JLabel section = new JLabel("Section:");
 	JTextField nameText = new JTextField("",10);
-	JTextField idText = new JTextField("",10);	
-	JLabel tSection = new JLabel("Switch Section");
-	JComboBox<String> sectionBox = new JComboBox<>();
+	JTextField idText = new JTextField("",10);
+	JTextField sectionText = new JTextField("",10);	
+	JLabel sectionBox = new JLabel("  ");
 	
     JPanel mainPanel = new JPanel(new BorderLayout());
     JPanel switchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -33,6 +34,7 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
     Vector<String> fixedColumn = new Vector<String>() {{
     	add("Student ID");
     	add("Student Name");
+    	add("Section");
     	add("Bonus");
     }};
     JTable jTable;
@@ -54,7 +56,6 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		this.add(inputPanel,BorderLayout.SOUTH);
 		
 		//organize mainPanel
-		switchPanel.add(tSection);
 		switchPanel.add(sectionBox);
 		mainPanel.add(switchPanel,BorderLayout.NORTH);
 		
@@ -70,6 +71,9 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		textPanel.add(new JLabel("    "));
 		textPanel.add(name);
 		textPanel.add(nameText);
+		textPanel.add(new JLabel("    "));
+		textPanel.add(section);
+		textPanel.add(sectionText);
 		textPanel.add(new JLabel("    "));
 		textPanel.add(search);
 		inputPanel.add(textPanel);
@@ -96,59 +100,55 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		for(Assignment a : course.getAssignments()) {
 			columnNames.add(a.getName());
     	}
+		String columnToolTips[] = new String[columnNames.size()];
+		columnToolTips[0]="Student ID is not editable here.";
+		columnToolTips[1]="Student Name is not editable here.";
+		columnToolTips[2]="Student Section is not editable here.";
+		columnToolTips[3]="Bonus point for the student.";
+		for(int i=4; i < columnNames.size(); i++) {
+			String tooltip = course.getAssignments().get(i-4).getType()+", Full Credit:"+course.getAssignments().get(i-4).getFullCredit();
+			columnToolTips[i] = tooltip;
+		}
 		data.clear();
-		
-		//make subheaders for assignment types and full credits
-		Vector<Object> subheader1 = new Vector<>();
-		subheader1.add("");
-		subheader1.add("");
-		subheader1.add("");
-		for(Assignment a : course.getAssignments()) {
-			subheader1.add(a.getType());
-    	}
-		data.add(subheader1);
-		
-		Vector<Object> subheader2 = new Vector<>();
-		subheader2.add("");
-		subheader2.add("");
-		subheader2.add("");
-		for(Assignment a : course.getAssignments()) {
-			subheader2.add("/" + a.getFullCredit());
-    	}
-		data.add(subheader2);
-		
 		for(EnrolledStudent s :course.getEnrollStudent()) {
     		Vector<Object> list = new Vector<>();
     		list.add(s.getID());
     		list.add(s.getName());
+    		list.add(s.getSection());
 			list.add(s.getBonus());
-			System.out.println(s.getGrades().size());
 			for(Grade g : s.getGrades()) {
-				if(g.getAssignment().getType().equals("Deduction Grading")) {  //if the assignment is graded deduction style, then display the loaded grade appropriately
-					list.add(g.getCredit() - g.getAssignment().getFullCredit() );
-				}
-				else { //display the raw credit if not deduction style (i.e. absolute style)
-					list.add(g.getCredit());
-				}
+				list.add(g.getCredit());
 			}
 			data.add(list);
     	}
 		DefaultTableModel myModel = new DefaultTableModel(data,columnNames) {
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
-		    	if(column<2 || row < 2)
+		    	if(column<3 )
 		    		return false;
 		        return true;
 		    }
 		};
-		jTable = new JTable(myModel);
+		jTable = new JTable(myModel) {
+			protected JTableHeader createDefaultTableHeader() {
+		        return new JTableHeader(columnModel) {
+		            public String getToolTipText(MouseEvent e) {
+		                String tip = null;
+		                java.awt.Point p = e.getPoint();
+		                int index = columnModel.getColumnIndexAtX(p.x);
+		                int realIndex = 
+		                        columnModel.getColumn(index).getModelIndex();
+		                return columnToolTips[realIndex];
+		            }
+		        };
+		    }
+		};
 		jTable.putClientProperty("terminateEditOnFocusLost", true);
 		TableRowSorter sorter = new TableRowSorter(myModel){
 		    @Override public boolean isSortable(int column) {
 			      return false;
 			    }
 			  };
-		
 		jTable.setRowSorter(sorter);  
     	jScrollPane = new JScrollPane(jTable);
     	jScrollPane.setPreferredSize(new Dimension(700,630));
@@ -170,24 +170,50 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		}
 		else if(e.getSource()==save) {
 			saveGrade();
-			JOptionPane.showMessageDialog(getParent(), "Grades have been saved.");
 		}
 		else if(e.getSource()==search){
 			String name = nameText.getText();
 			String id = idText.getText();
-			if(name.length() == 0 && id.length() == 0) {
+			String section = sectionText.getText();
+			if(name.length() == 0 && id.length() == 0 && section.length()==0) {
 				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(null);  
-			}else if(name.length() != 0 && id.length() == 0) {
+			}else if(name.length() != 0 && id.length() == 0&& section.length()==0) {
 				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(name, 1)); 
-			}else if(name.length() == 0 && id.length() != 0) {
+			}else if(name.length() == 0 && id.length() != 0&& section.length()==0) {
 				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(id, 0)); 
-			}else {
+			}else if(name.length() != 0 && id.length() != 0&& section.length()==0){
 				ArrayList<RowFilter<Object,Object>> rfs = 
 			            new ArrayList<RowFilter<Object,Object>>();
 				rfs.add(RowFilter.regexFilter(name, 1));
 				rfs.add(RowFilter.regexFilter(id, 0));
 				RowFilter<DefaultTableModel, Object> rf = RowFilter.andFilter(rfs);
-				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(id, 0)); 
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(rf); 
+			}
+			//
+			else if(name.length() == 0 && id.length() == 0 && section.length()!=0) {
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(RowFilter.regexFilter(section, 2));  
+			}else if(name.length() != 0 && id.length() == 0&& section.length()!=0) {
+				ArrayList<RowFilter<Object,Object>> rfs = 
+			            new ArrayList<RowFilter<Object,Object>>();
+				rfs.add(RowFilter.regexFilter(name, 1));
+				rfs.add(RowFilter.regexFilter(section, 2));
+				RowFilter<DefaultTableModel, Object> rf = RowFilter.andFilter(rfs);
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(rf); 
+			}else if(name.length() == 0 && id.length() != 0&& section.length()!=0) {
+				ArrayList<RowFilter<Object,Object>> rfs = 
+			            new ArrayList<RowFilter<Object,Object>>();
+				rfs.add(RowFilter.regexFilter(id, 0));
+				rfs.add(RowFilter.regexFilter(section, 2));
+				RowFilter<DefaultTableModel, Object> rf = RowFilter.andFilter(rfs);
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(rf); 
+			}else if(name.length() != 0 && id.length() != 0&& section.length()!=0){
+				ArrayList<RowFilter<Object,Object>> rfs = 
+			            new ArrayList<RowFilter<Object,Object>>();
+				rfs.add(RowFilter.regexFilter(name, 1));
+				rfs.add(RowFilter.regexFilter(id, 0));
+				rfs.add(RowFilter.regexFilter(section, 2));
+				RowFilter<DefaultTableModel, Object> rf = RowFilter.andFilter(rfs);
+				((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(rf); 
 			}
         }
 	}
@@ -198,24 +224,20 @@ public class GradingPage extends JPanel implements ActionListener, SettingChange
 		((TableRowSorter)this.jTable.getRowSorter()).setRowFilter(null); 
 		int column = jTable.getColumnCount();
 		int row = jTable.getRowCount();
-		for(int i = 2; i < row; i++) {
-			for(int j = 2; j < column; j++) {
-				System.out.println(this.course.getEnrollStudent().get(i).getName()+" ");
-				if(j==2) {
+		for(int i = 0; i < row; i++) {
+			for(int j = 3; j < column; j++) {
+				if(j==3) {
 					this.course.getEnrollStudent().get(i).setBonus(Double.valueOf(jTable.getValueAt(i, j).toString()));
 				}else {
-					
-					String gradeAssignmentType = this.course.getAssignments().get(j-3).getType();
-					//if the assignment in this column is deducted style, then convert the deducted to absolute
-					Double absoluteGradeValue = Double.valueOf(jTable.getValueAt(i, j).toString());
-					if(gradeAssignmentType.equals("Deduction Grading")){
-						absoluteGradeValue += this.course.getAssignments().get(j-3).getFullCredit();
+					if(!this.course.getEnrollStudent().get(i).getGrades().get(j-4).setCredit(Double.valueOf(jTable.getValueAt(i, j).toString()))) {
+						JOptionPane.showMessageDialog(getParent(), "StudentId:"+this.course.getEnrollStudent().get(i).getID()+" Assignment:"+this.course.getEnrollStudent().get(i).getGrades().get(j-4).getAssignment().getName()+ " error!");
+						return ;
 					}
-					this.course.getEnrollStudent().get(i).getGrades().get(j-3).setCredit(absoluteGradeValue);
 				}
 			}
 		}
 		db.updateGrade(this.course);
+		JOptionPane.showMessageDialog(getParent(), "Grades have been saved.");
 	}
 	
 	@Override

@@ -83,7 +83,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
     		Vector<Object> list = new Vector<>();
     		list.add(s.getName());
 			list.add(s.getID());
-			list.add("");
+			list.add(s.getSection());
 			data.add(list);
     	}
 		jTable = new JTable(new CustomizedTable(columnNames,data,set,this));
@@ -107,7 +107,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 				students = new ArrayList<EnrolledStudent>();
 				Vector<Vector<Object>> tmp = ReadExcel.getSheet(SelectFile.select());
 				for(int i = 0; i<tmp.size(); i++)
-					students.add(new EnrolledStudent(tmp.get(i).get(0).toString(),tmp.get(i).get(1).toString()));
+					students.add(new EnrolledStudent(tmp.get(i).get(0).toString(),tmp.get(i).get(1).toString(),tmp.get(i).get(2).toString()));
 				refreshStudentList();
 			}
 			catch(Exception exception) {
@@ -118,6 +118,7 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 			course.setEnrollStudent(students);
 			System.out.println("size is " + students.size());
 			db.updateStudent(students, course);
+			db.updateGrade(this.course);
 			notifyALLListener();
 			JOptionPane.showMessageDialog(getParent(), "Student infomation has been confirmed.");
 		}
@@ -167,7 +168,10 @@ public class StudentPage extends JPanel implements ActionListener, TableModelLis
 					break;
 				case "Student ID":
 					students.get(row).setID(content.toString());
-					break;	
+					break;
+				case "Section":
+					students.get(row).setSection(content.toString());
+					break;
             }
         }
 	}

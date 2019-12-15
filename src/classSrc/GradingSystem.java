@@ -23,6 +23,14 @@ public class GradingSystem
 	}
 	
 	public boolean LoginCheck(String Uid, String password) {
-        return true;
+        return db.LoginCheck(Uid,password);
     }
+	
+	public boolean SignUp(String Uid, String password) {
+		if(db.LoginCheck(Uid)) {
+			return false;
+		}
+		db.signUp(Uid,password);
+		return true;
+	}
 }

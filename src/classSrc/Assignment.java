@@ -95,7 +95,8 @@ public class Assignment
 	}
 
 	public Double getFullCredit() {
-		return fullCredit;
+		BigDecimal bg = new BigDecimal(fullCredit);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 	public void setFullCredit(Double fullCredit) {
@@ -103,7 +104,8 @@ public class Assignment
 	}
 
 	public Double getWeight() {
-		return weight;
+		BigDecimal bg = new BigDecimal(weight);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 	public void setWeight(Double weight) {
@@ -121,12 +123,4 @@ public class Assignment
 	public boolean hasCurve() {
 		return curve != null;
 	}
-	
-	//converts a student's grade on this assignment from raw score to percentage score, taking the curve into account if specified
-	//abstract public Double CalculatePercentageScore(Double score, boolean curved);
-	
-	//returns a string representation of a student's grade on the assignment. Called from instances of Grade.java
-	//string representation varies depending on the type of assignment (deducted score vs absolute score)
-	//abstract public String GetScoreDisplay(Double score);
-
 }

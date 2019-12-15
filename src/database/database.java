@@ -69,6 +69,53 @@ public class database {
 		}
 	}
 	
+	
+	public boolean LoginCheck(String Uid, String password) {
+		sql = "select * from gradingsystem.user where Name=" + "'" + Uid + "' and Password = '" + password + "'";
+		try {
+			res = stmt.executeQuery(sql);
+			while ( res.next()) {
+				return true;
+			}
+		}
+		catch(Exception e) {
+			System.out.println("login check fail");  
+            e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean LoginCheck(String Uid) {
+		sql = "select * from gradingsystem.user where Name=" + "'" + Uid + "'";
+		try {
+			res = stmt.executeQuery(sql);
+			while ( res.next()) {
+				return true;
+			}
+		}
+		catch(Exception e) {
+			System.out.println("login check fail");  
+            e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean signUp(String Uid, String password) {
+		sql = "select * from gradingsystem.user where Name=" + "'" + Uid + "'";
+		try {
+			sql = "insert into gradingsystem.user( Name, Password) values ('" +Uid + "'," 
+					+ "'" + password + "')";
+			System.out.println(sql);
+			stmt.executeUpdate(sql);
+			success = true;
+		}
+		catch(Exception e) {
+			success = false;
+			System.out.println("add user fail");  
+            e.printStackTrace();  
+		}
+		return success;
+	}
 	/*Course operation*/
 	
 	//add course in database
@@ -227,7 +274,8 @@ public class database {
 					sql = "insert into gradingsystem.Student(StudentID, Name) values ('" + s.getID() + "'," + "'"+ s.getName() + "')";
 					stmt.executeUpdate(sql);
 					sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID, Section, Bonus, Comment) values ('" + s.getID() + "'," + "'" 
-							+ course.getUID() + "'," + 1 + "," + s.getBonus() + ",'" + s.getComment() + "')";
+							+ course.getUID() + "','" + s.getSection() + "'," + s.getBonus() + ",'" + s.getComment() + "')";
+					System.out.println(sql);
 					stmt.executeUpdate(sql);
 				}
 				else {
@@ -236,13 +284,22 @@ public class database {
 					res = stmt.executeQuery(sql);
 					if(res.next()) {
 						sql = "update gradingsystem.Student set Name = " + "'" + s.getName() + "',"
-								+ "StudentID = " + "'" + s.getID() + "'"
+								+ "StudentID = " + "'" + s.getID() + "' "
 								+ "where StudentID = " + "'" + s.getID() + "'";
+						System.out.println(sql);
 						stmt.executeUpdate(sql);
+						
+						sql = "update gradingsystem.StudentCourse set "
+								+ "section = " + "'" + s.getSection() + "' "
+								+ "where StudentID = " + "'" + s.getID() + "'"
+								+ "and CourseID = " + "'" +course.getUID()+ "'";
+						System.out.println(sql);
+						stmt.executeUpdate(sql);
+						
 					}
 					else {
 						sql = "insert into gradingsystem.StudentCourse(StudentID, CourseID, Section, Bonus, Comment) values ('" + s.getID() + "'," + "'" 
-								+ course.getUID() + "'," + 1 + "," + s.getBonus() + ",'" + s.getComment() + "')";
+								+ course.getUID() + "','" + s.getSection() + "'," + s.getBonus() + ",'" + s.getComment() + "')";
 						System.out.println(sql);
 						stmt.executeUpdate(sql);
 					}
@@ -292,7 +349,7 @@ public class database {
 		try {
 			res2 = stmt2.executeQuery(sql);
 			while( res2.next()) {
-				EnrolledStudent student = new EnrolledStudent(res2.getString("Name"), res2.getString("StudentID"), null, res2.getDouble("Bonus"), res2.getString("Comment"));
+				EnrolledStudent student = new EnrolledStudent(res2.getString("Name"), res2.getString("StudentID"), null, res2.getDouble("Bonus"), res2.getString("Comment"), res2.getString("section"));
 				students.add(student);
 			}
 			for(EnrolledStudent s : students) {

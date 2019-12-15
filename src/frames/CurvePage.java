@@ -63,10 +63,10 @@ public class CurvePage extends JPanel implements ActionListener, SettingChangeLi
 				list.add("0.0");
 			}else if(a.getCurve() instanceof FlatCurve){
 				list.add(curveType.getItemAt(0));
-				list.add(a.getCurve().getAmount());
+				list.add(a.getCurve().getAmount().toString());
 			}else if(a.getCurve() instanceof PercentageCurve){
 				list.add(curveType.getItemAt(1));
-				list.add(a.getCurve().getAmount());
+				list.add(a.getCurve().getAmount().toString());
 			}
 			data.add(list);
     	}   

@@ -56,10 +56,6 @@ public class LoginFrame extends JFrame implements ActionListener//implements Act
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==signUp){
-        	JOptionPane.showMessageDialog(getParent(), "The system is not open for new users yet.");
-        	return;
-        }
 		String n = textName.getText();
         String p = String.valueOf(textPassword.getPassword());
         if (n.isEmpty()){
@@ -79,6 +75,12 @@ public class LoginFrame extends JFrame implements ActionListener//implements Act
                 this.dispose();
             }else {
             	JOptionPane.showMessageDialog(getParent(), "Either your Username or Password is wrong. Please enter again.");
+            }
+        }else if (e.getSource()==signUp){
+        	if(GradingSystem.getInstance().SignUp(n,p)){
+        		JOptionPane.showMessageDialog(getParent(), "User created.");
+            }else {
+            	JOptionPane.showMessageDialog(getParent(), "User already exist");
             }
         }
     }

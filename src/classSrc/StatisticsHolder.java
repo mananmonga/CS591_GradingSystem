@@ -1,5 +1,7 @@
 package classSrc;
 
+import java.math.BigDecimal;
+
 //data structure to hold important statistics for a certain measurement (i.e. assignment grades)
 public class StatisticsHolder {
 	
@@ -37,19 +39,23 @@ public class StatisticsHolder {
 	
 	
 	public Double GetAverage() {
-		return average;
+		BigDecimal bg = new BigDecimal(average);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public Double GetMin() {
-		return min;
+		BigDecimal bg = new BigDecimal(min);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public Double GetMax() {
-		return max;
+		BigDecimal bg = new BigDecimal(max);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 	
 	public Double GetMedian() {
-		return median;
+		BigDecimal bg = new BigDecimal(median);
+		return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 }

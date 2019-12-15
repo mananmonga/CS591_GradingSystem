@@ -115,7 +115,7 @@ DROP TABLE IF EXISTS `StudentCourse`;
 CREATE TABLE `StudentCourse` (
   `StudentID` varchar(45) NOT NULL,
   `CourseID` varchar(45) NOT NULL,
-  `section` int(11) DEFAULT NULL,
+  `section` varchar(45) NOT NULL,
   `Comment` varchar(45) DEFAULT NULL,
   `Bonus` double DEFAULT NULL,
   PRIMARY KEY (`StudentID`,`CourseID`),
@@ -131,7 +131,7 @@ CREATE TABLE `StudentCourse` (
 
 LOCK TABLES `StudentCourse` WRITE;
 /*!40000 ALTER TABLE `StudentCourse` DISABLE KEYS */;
-INSERT INTO `StudentCourse` VALUES ('cc','4f74842cee744bc',1,'hard-worker',10),('U27','f0a2d279056b4a8',1,'wdsqw',0),('U29','f0a2d279056b4a8',1,'ed',0),('U30','f0a2d279056b4a8',1,'rfr',0);
+INSERT INTO `StudentCourse` VALUES ('cc','4f74842cee744bc','1','hard-worker',10),('U27','f0a2d279056b4a8','1','wdsqw',0),('U29','f0a2d279056b4a8','1','ed',0),('U30','f0a2d279056b4a8','1','rfr',0);
 /*!40000 ALTER TABLE `StudentCourse` ENABLE KEYS */;
 UNLOCK TABLES;
 

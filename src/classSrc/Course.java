@@ -1,5 +1,6 @@
 package classSrc;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Course {
@@ -36,19 +37,15 @@ public class Course {
     
     //returns the overall score for one particular student in this course, based on the credits and weights of all their grades, the curve of each assignment, and the curve of the overall course
     public Double GetOverallScore(EnrolledStudent es, boolean curved) {
-    	
     	Double total = 0.0;
-    	
     	ArrayList<Grade> grades = es.getGrades();
-    	
     	for(int i = 0; i < grades.size(); i += 1) {
     		Double currentGradeContribution = grades.get(i).calculatePercentageScore(curved) * grades.get(i).getAssignment().getWeight();
     		total += currentGradeContribution;
     	}
-    	
     	Double adjustedTotal = curved && this.hasCurve() ? curve.ConvertRawToCurved(total + es.getBonus()) : total;
-    	
-    	return adjustedTotal;
+    	BigDecimal bg = new BigDecimal(adjustedTotal);
+    	return bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
     
     public StatisticsHolder CalculateOverallCourseStats(boolean curved) {

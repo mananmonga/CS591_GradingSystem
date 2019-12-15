@@ -83,13 +83,13 @@ public class StudentStatsPage extends JPanel implements ActionListener
 		if(student!=null) {
 			Vector<Object> list = new Vector<>();
 	    	list.add("Bonus Point");
-			list.add(student.getBonus());
+			list.add(String.valueOf(student.getBonus()));
 			list.add(student.getComment());
 			data.add(list);
 			for(Grade g : student.getGrades()) {
     			Vector<Object> tlist = new Vector<>();
     			tlist.add(g.getAssignment().getName());
-    			tlist.add(g.getCredit());
+    			tlist.add(String.valueOf(g.getCredit()));
     			tlist.add(g.getComment());
  				data.add(tlist);
     		}

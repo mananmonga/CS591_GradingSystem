@@ -124,8 +124,8 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
     		list.add(a.getType());
 			list.add(a.getName());
 			list.add(a.getDescription());
-			list.add(a.getFullCredit());
-			list.add(a.getWeight());
+			list.add(String.valueOf(a.getFullCredit()));
+			list.add(String.valueOf(a.getWeight()));
 			data.add(list);
     	}
 		jTable = new JTable(new CustomizedTable(columnNames,data,set,this));
@@ -202,7 +202,7 @@ public class AssignmentPage extends JPanel implements ActionListener, TableModel
 		for(Assignment a : assignments) {
 			totalWeight += a.getWeight();
 			BigDecimal bg = new BigDecimal(totalWeight);
-			totalWeight = bg.setScale(3, BigDecimal.ROUND_HALF_UP).doubleValue();
+			totalWeight = bg.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 		}
 		return totalWeight == 1.0;
 	}

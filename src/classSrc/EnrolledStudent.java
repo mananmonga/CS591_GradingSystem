@@ -6,22 +6,38 @@ public class EnrolledStudent extends Student {
     private ArrayList<Grade> grades = new ArrayList<Grade>();
     private Double bonusPoints = 0.0;
     private String comments ="";
+    private String section = "1";
     
-    public EnrolledStudent(String name, String ID, ArrayList<Grade> grades_, Double bonusPoints_, String comments_) {
+    public EnrolledStudent(String name, String ID, ArrayList<Grade> grades_, Double bonusPoints_, String comments_, String section_) {
     	super(name, ID);
     	grades = grades_;
     	bonusPoints = bonusPoints_;
     	comments = comments_;
+    	section = section_;
     }
     
     public EnrolledStudent(String name, String ID) {
     	super(name, ID);
     }
     
+    public EnrolledStudent(String name, String ID, String section_) {
+    	super(name, ID);
+    	section = section_;
+    }
+    
     public EnrolledStudent(EnrolledStudent s) {
         super(s.getName(),s.getID());
         this.bonusPoints = s.getBonus();
         this.grades = s.getGrades();
+        this.section = s.getSection();
+    }
+    
+    public String getSection() {
+    	return this.section;
+    }
+    
+    public void setSection(String section) {
+    	this.section = section;
     }
     
     public ArrayList<Grade> getGrades() {
