@@ -44,7 +44,7 @@ public class Assignment
 		this.description = description_;
 		this.fullCredit = fullCredit_;
 		this.weight = weight_;
-		Curve c = null;
+		Curve c = new FlatCurve(curvevalue);
 		if(curvetype.equals("Flat")) {
     		c = new FlatCurve(curvevalue);
     	}else if(curvetype.equals("Percentage")) {

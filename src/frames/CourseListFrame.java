@@ -130,6 +130,7 @@ public class CourseListFrame extends JFrame implements ActionListener, TableMode
                 JOptionPane.showMessageDialog(getParent(), "Please select the course.");
                 return;
             }
+			System.out.println(courses.get(jTable.getSelectedRow()).getName());
 			new CourseFrame(courses.get(jTable.getSelectedRow()));
 		}
 	}

@@ -400,13 +400,16 @@ public class database {
 							+ "FullCredit = " + a.getFullCredit() + ","
 							+ "Weight = " + a.getWeight() + ","
 							+ "type = " + "'" + a.getType() + "',"
-							+ "Description = " + "'" + a.getDescription() + "'"
+							+ "Description = " + "'" + a.getDescription() + "',"
+							+ "Curve = " + "'" + a.getCurve().getCurveString() + "',"
+							+ "CuverValue = " + a.getCurve().getAmount()
 							+ "where CourseID = " + "'" + course.getUID() 
 							+ "' and TaskID = " + "'" + a.getID() + "'";
+					System.out.println(sql);
 					stmt.executeUpdate(sql);
  				}
 				else {
-					sql = "insert into gradingsystem.task(CourseID, Name, FullCredit, Weight, type, Description, TaskID)"
+					sql = "insert into gradingsystem.task(CourseID, Name, FullCredit, Weight, type, Description, TaskID, Curve, CurveValue)"
 							+ "values ('"
 							+ course.getUID()+ "',"
 							+ "'" + a.getName() + "',"
@@ -414,7 +417,10 @@ public class database {
 							+ a.getWeight() + ","
 							+ "'" + a.getType() + "',"
 							+ "'" + a.getDescription() + "',"
-							+ "'" + a.getID() + "')";
+							+ "'" + a.getID() + "',"
+							+ "'" + a.getCurve().getCurveString() + "',"
+							+ a.getCurve().getAmount() + ")";
+					System.out.println(sql);
 					stmt.executeUpdate(sql);
 							
 				}

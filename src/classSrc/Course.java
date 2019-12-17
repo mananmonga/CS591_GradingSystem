@@ -66,8 +66,11 @@ public class Course {
     		average += courseGrade / Double.valueOf(courseGrades.size());
     	}
     	
+    	if(courseGrades.size()==0) {
+    		return new StatisticsHolder(0.0, 0.0, 0.0, 0.0);
+    	}
+    		
     	int medianIndex = courseGrades.size() / 2;
-    	
     	Double median = courseGrades.get(medianIndex);
     	Double min = courseGrades.get(0);
     	Double max = courseGrades.get(courseGrades.size() - 1);
