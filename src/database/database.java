@@ -402,7 +402,7 @@ public class database {
 							+ "type = " + "'" + a.getType() + "',"
 							+ "Description = " + "'" + a.getDescription() + "',"
 							+ "Curve = " + "'" + a.getCurve().getCurveString() + "',"
-							+ "CuverValue = " + a.getCurve().getAmount()
+							+ "CurveValue = " + a.getCurve().getAmount()
 							+ "where CourseID = " + "'" + course.getUID() 
 							+ "' and TaskID = " + "'" + a.getID() + "'";
 					System.out.println(sql);

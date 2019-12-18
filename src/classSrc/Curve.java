@@ -18,7 +18,6 @@ public abstract class Curve {
 	
 	abstract public String getCurveString();
 	//abstract public Double calculateCurvedPart(Double plainScore);
-
 	
 	//different implementation depending on the curved type (flat, percentage, etc)
 	abstract public Double ConvertRawToCurved(Double rawCredit);
