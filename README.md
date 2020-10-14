@@ -1,5 +1,7 @@
 # CS591_GradingSystem
 
+Prerequisites to run the project:
+
 database:
 1.create a database in mysql called gradingsystem
 
